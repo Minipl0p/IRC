@@ -6,7 +6,17 @@
 /*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/03 12:00:28 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/03 14:31:32 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "00_Server.hpp"
+
+/* ——— Constructor & Destructor ————————————————————————————————————————————— */
+Server::Server(){
+	//_commandsMap["PASS"] = fonction
+}
+
+
+
+/* ——— Getters & Setters ———————————————————————————————————————————————————— */

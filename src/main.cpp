@@ -6,7 +6,14 @@
 /*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 11:57:26 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/03 11:57:27 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/03 13:22:15 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "server/00_Server.hpp"
+
+int main(){
+	
+	Server server;
+	
+}
