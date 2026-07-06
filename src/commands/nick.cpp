@@ -1,7 +1,15 @@
 
-
+#include "../reply/Reply.hpp"
 #include "../server/Server.hpp"
 #include <cctype>
+
+static std::string toLower(const std::string &s)
+{
+	std::string result = s;
+	for (size_t i = 0; i < result.size(); i++)
+		result[i] = std::tolower(result[i]);
+	return result;
+}
 
 static bool isValidNickname(const std::string &nick)
 {
@@ -16,7 +24,7 @@ static bool isValidNickname(const std::string &nick)
 
 	for (size_t i = 1; i < nick.size(); i++) {
 		c = nick[i];
-		if (!std::isalnum(c) && special.find(c) == std::string::npos && c == '-')
+		if (!std::isalnum(c) && special.find(c) == std::string::npos && c != '-')
 			return false;
 	}
 
@@ -26,27 +34,26 @@ static bool isValidNickname(const std::string &nick)
 void Server::nick(Client &client, std::vector<std::string> &params)
 {
 	if (!client.isPassOk()) {
-		// QUOI RENVOYER
+		sendReply(client, ERR_PASSWDMISMATCH, ":Password required");
 		return;
 	}
 
 	if (params.empty()) {
-		// QUOI RENVOYER
+		sendReply(client, ERR_NONICKNAMEGIVEN, ":No nickname given");
 		return;
 	}
 
 	std::string newNick = params[0];
 
 	if (!isValidNickname(newNick)) {
-		// QUOI RENVOYER
+		sendReply(client, ERR_ERRONEUSNICKNAME, newNick + " :Erroneous nickname");
 		return;
 	}
 
-	// Is username already used
 	std::map<int, Client *>::iterator it;
 	for (it = _listeningClientsMap.begin(); it != _listeningClientsMap.end(); ++it) {
-		if (it->second->getNickname() == newNick) {
-			// QUOI RENVOYER
+		if (toLower(it->second->getNickname()) == toLower(newNick)) {
+			sendReply(client, ERR_NICKNAMEINUSE, newNick + " :Nickname is already in use");
 			return;
 		}
 	}

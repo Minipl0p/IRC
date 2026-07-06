@@ -45,6 +45,9 @@ class Server
 	bool findChannelToLst(Channel &) const;
 	void deleteChannelToLst(Channel &);
 
+	/* ——— Replies —————————————————————————————————————————————————————————— */
+	void sendReply(Client &client, const std::string &code, const std::string &params);
+
   public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
 	Server();
