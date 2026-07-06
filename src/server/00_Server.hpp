@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/06 15:50:29 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/06 17:08:56 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ class Server
 		std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
 		const int& getServerSocket() const { return _serverSocket;}
 		const sockaddr_in& getServerAddress() const {return _serverAddress;}
+		const pollfd& getServerFd() const {return _pollfds[0];}
 	
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
 		//Init
