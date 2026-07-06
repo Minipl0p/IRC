@@ -1,14 +1,5 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   00_Server.hpp                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/03 14:47:10 by rcompain         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+
+#pragma once
 
 #include <iostream>
 #include <map>
@@ -19,7 +10,9 @@
 #include "../clients/Client.hpp"
 #include "../parsing/Message.hpp"
 
+/* ——— Forward declarations ————————————————————————————————————————————————— */
 class Channel;
+
 typedef int fd;
 
 class Server
@@ -27,53 +20,46 @@ class Server
 	typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
 
   private:
-	std::vector<pollfd> _pollfds;
-	/* struct pollfd {
-	   int   fd;         file descriptor
-	   short events;     requested events
-	   short revents;    returned events
-   };  */
-	std::map<std::string, Command> _commandsMap; // Liste de commande
-	// Proto: void name (Client &client, std::vector<std::string> &params)
-	// CommandsMap
+	/* ——— Attributes ——————————————————————————————————————————————————————— */
+	std::string						 _password;
+	std::vector<pollfd>				 _pollfds;
+	std::map<fd, Client *>			 _listeningClientsMap;
+	std::map<std::string, Channel *> _lstChannels;
+	std::map<std::string, Command>	 _commandsMap;
+
+	/* ——— Setup ———————————————————————————————————————————————————————————— */
+	void initCommands();
+
+	/* ——— Command routing —————————————————————————————————————————————————— */
+	void executeCmd(Client &client, Message &msg);
 	void tryRegister(Client &client);
+
+	/* ——— IRC commands ————————————————————————————————————————————————————— */
 	void pass(Client &client, std::vector<std::string> &params);
 	void nick(Client &client, std::vector<std::string> &params);
 	void user(Client &client, std::vector<std::string> &params);
 	void join(Client &client, std::vector<std::string> &params);
-	void initCommands();
-	// [...]
 
-	std::map<fd, Client *> _listeningClientsMap;
-
-	std::map<std::string, Channel *> _lstChannels;
-
-	std::string _password;
+	/* ——— Channel management ——————————————————————————————————————————————— */
+	void addChannelToLst(Channel &);
+	bool findChannelToLst(Channel &) const;
+	void deleteChannelToLst(Channel &);
 
   public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
 	Server();
-	~Server() {};
+	~Server();
 
-	/* ——— Getters & Setters ———————————————————————————————————————————————— */
-	std::vector<pollfd>					 &getLstFds() { return _pollfds; }
-	const std::map<std::string, Command> &getCommandsMap() { return _commandsMap; }
-	std::map<fd, Client *>				 &getListeningClientsMap() { return _listeningClientsMap; }
+	/* ——— Main entry point ————————————————————————————————————————————————— */
+	void handleClientData(Client &);
 
-	/* ——— Methodes ————————————————————————————————————————————————————————— */
-	// Clients
+	/* ——— Client management ———————————————————————————————————————————————— */
 	void addClientsToLst(Client &);
 	bool findClientsToLst(Client &) const;
 	void deleteClientsToLst(Client &);
 
-	// CommandsMap
-	void executeCmd(Client &, Message &);
-
-	// ListeningClientsMap
-	void handleClientData(Client &);
-
-	// LstChannels
-	void addChannelToLst(Channel &);
-	bool findChannelToLst(Channel &) const;
-	void deleteChannelToLst(Channel &);
+	/* ——— Getters & Setters ———————————————————————————————————————————————— */
+	std::vector<pollfd>					 &getLstFds();
+	const std::map<std::string, Command> &getCommandsMap();
+	std::map<fd, Client *>				 &getListeningClientsMap();
 };

@@ -1,5 +1,6 @@
 
 #include "../server/Server.hpp"
+#include <cctype>
 
 void Server::initCommands()
 {

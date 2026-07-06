@@ -1,12 +1,14 @@
 
+
 #include "../server/Server.hpp"
+#include <cctype>
 
 static bool isValidNickname(const std::string &nick)
 {
 	if (nick.empty() || nick.size() > 9)
 		return false;
 
-	const std::string special = "[]\\`_^{|}-";
+	const std::string special = "[]\\`_^{|}";
 
 	char c = nick[0];
 	if (!std::isalpha(c) && special.find(c) == std::string::npos)
@@ -14,7 +16,7 @@ static bool isValidNickname(const std::string &nick)
 
 	for (size_t i = 1; i < nick.size(); i++) {
 		c = nick[i];
-		if (!std::isalnum(c) && special.find(c) == std::string::npos)
+		if (!std::isalnum(c) && special.find(c) == std::string::npos && c == '-')
 			return false;
 	}
 
