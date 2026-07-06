@@ -10,10 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <map>
-#include <vector>
-#include <poll.h>
 #include <iostream>
+#include <map>
+#include <poll.h>
+#include <vector>
 
 typedef Client;
 typedef Channel;
@@ -22,49 +22,48 @@ typedef int fd;
 
 class Server
 {
-	public:
+  public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
-		Server();
-		~Server(){};
-	
+	Server();
+	~Server() {};
+
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
-		std::vector<pollfd>& getLstFds() { return _pollfds;}
-		const std::map<std::string, Command>& getCommandsMap() { return _commandsMap;}
-		std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
-	
+	std::vector<pollfd>					 &getLstFds() { return _pollfds; }
+	const std::map<std::string, Command> &getCommandsMap() { return _commandsMap; }
+	std::map<fd, Client &>				 &getListeningClientsMap() { return _listeningClientsMap; }
+
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
-		// Clients
-		void addClientsToLst(Client &);
-		bool findClientsToLst(Client &)const;
-		void deleteClientsToLst(Client &);
+	// Clients
+	void addClientsToLst(Client &);
+	bool findClientsToLst(Client &) const;
+	void deleteClientsToLst(Client &);
 
-		// CommandsMap
-		void exectuteCmd(const std::string& srcCmd)const;
-		
-		//ListeningClientsMap
+	// CommandsMap
+	void exectuteCmd(const std::string &srcCmd) const;
 
-		//LstChannels
-		void addChannelToLst(Channel &);
-		bool findChannelToLst(Channel &)const;
-		void deleteChannelToLst(Channel &);
+	// ListeningClientsMap
 
-	private:
-		std::vector<pollfd> _pollfds;
-			/* struct pollfd {
-               int   fd;         file descriptor
-               short events;     requested events
-               short revents;    returned events 
-           };  */
-		const std::map<std::string, Command> _commandsMap; // Liste de commande
-		// Proto: void name (Client &client, std::vector<std::string> &params)
-		// CommandsMap
-		void pass(Client &client, std::vector<std::string> &params);
-		void nick(Client &client, std::vector<std::string> &params);
-		void join(Client &client, std::vector<std::string> &params);
-		// [...]
-		
-		std::map<fd, Client&> _listeningClientsMap;
+	// LstChannels
+	void addChannelToLst(Channel &);
+	bool findChannelToLst(Channel &) const;
+	void deleteChannelToLst(Channel &);
 
-		std::map<std::string, Channel*> _lstChannels;
-		
+  private:
+	std::vector<pollfd> _pollfds;
+	/* struct pollfd {
+	   int   fd;         file descriptor
+	   short events;     requested events
+	   short revents;    returned events
+   };  */
+	const std::map<std::string, Command> _commandsMap; // Liste de commande
+	// Proto: void name (Client &client, std::vector<std::string> &params)
+	// CommandsMap
+	void pass(Client &client, std::vector<std::string> &params);
+	void nick(Client &client, std::vector<std::string> &params);
+	void join(Client &client, std::vector<std::string> &params);
+	// [...]
+
+	std::map<fd, Client &> _listeningClientsMap;
+
+	std::map<std::string, Channel *> _lstChannels;
 };
