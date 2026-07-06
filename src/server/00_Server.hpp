@@ -6,9 +6,11 @@
 /*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/06 12:17:41 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/06 15:50:29 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
 
 #include <map>
 #include <vector>
@@ -17,8 +19,9 @@
 #include <netinet/in.h> //socketadress
 #include <sys/socket.h>
 
-typedef Client;
-typedef Channel;
+class Client;
+class Channel;
+class Server;
 typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
 typedef int fd;
 
@@ -33,6 +36,8 @@ class Server
 		std::vector<pollfd>& getLstFds() { return _pollfds;}
 		const std::map<std::string, Command>& getCommandsMap() { return _commandsMap;}
 		std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
+		const int& getServerSocket() const { return _serverSocket;}
+		const sockaddr_in& getServerAddress() const {return _serverAddress;}
 	
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
 		//Init
@@ -54,8 +59,8 @@ class Server
 		void deleteChannelToLst(Channel &);
 
 	private:
-		int 		serverSocket;
-		sockaddr_in	serverAddress;
+		static const int 	_serverSocket;
+		sockaddr_in	_serverAddress;
 	
 		std::vector<pollfd> _pollfds;
 			/* struct pollfd {
