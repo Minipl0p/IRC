@@ -13,15 +13,41 @@
 #include <iostream>
 #include <map>
 #include <poll.h>
+#include <string>
 #include <vector>
 
-typedef Client;
+#include "../clients/00_Client.hpp"
+#include "00_Message.hpp"
+
 typedef Channel;
-typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
 typedef int fd;
 
 class Server
 {
+	typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
+
+  private:
+	std::vector<pollfd> _pollfds;
+	/* struct pollfd {
+	   int   fd;         file descriptor
+	   short events;     requested events
+	   short revents;    returned events
+   };  */
+	std::map<std::string, Command> _commandsMap; // Liste de commande
+	// Proto: void name (Client &client, std::vector<std::string> &params)
+	// CommandsMap
+	void pass(Client &client, std::vector<std::string> &params);
+	void nick(Client &client, std::vector<std::string> &params);
+	void user(Client &client, std::vector<std::string> &params);
+	void join(Client &client, std::vector<std::string> &params);
+	// [...]
+
+	std::map<fd, Client *> _listeningClientsMap;
+
+	std::map<std::string, Channel *> _lstChannels;
+
+	std::string _password;
+
   public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
 	Server();
@@ -39,31 +65,13 @@ class Server
 	void deleteClientsToLst(Client &);
 
 	// CommandsMap
-	void exectuteCmd(const std::string &srcCmd) const;
+	void executeCmd(Client &, Message &);
 
 	// ListeningClientsMap
+	void handleClientData(Client &);
 
 	// LstChannels
 	void addChannelToLst(Channel &);
 	bool findChannelToLst(Channel &) const;
 	void deleteChannelToLst(Channel &);
-
-  private:
-	std::vector<pollfd> _pollfds;
-	/* struct pollfd {
-	   int   fd;         file descriptor
-	   short events;     requested events
-	   short revents;    returned events
-   };  */
-	const std::map<std::string, Command> _commandsMap; // Liste de commande
-	// Proto: void name (Client &client, std::vector<std::string> &params)
-	// CommandsMap
-	void pass(Client &client, std::vector<std::string> &params);
-	void nick(Client &client, std::vector<std::string> &params);
-	void join(Client &client, std::vector<std::string> &params);
-	// [...]
-
-	std::map<fd, Client &> _listeningClientsMap;
-
-	std::map<std::string, Channel *> _lstChannels;
 };

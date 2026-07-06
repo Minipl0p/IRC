@@ -10,3 +10,38 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#pragma once
+
+#include <string>
+
+class Client
+{
+  private:
+	int			_fd;
+	std::string _nickname;
+	std::string _username;
+	std::string _fullname;
+	bool		_authenticated;
+	bool		_passOk;
+	std::string _readBuffer;
+
+  public:
+	Client(int fd);
+	~Client();
+
+	// Getters -----------------------------------------------------------------
+	int				   getFd() const;
+	const std::string &getNickname() const;
+	const std::string &getUsername() const;
+	const std::string &getFullname() const;
+	bool			   isAuthenticated() const;
+	bool			   isPassOk() const;
+	std::string		  &getReadBuffer();
+
+	// Setter ------------------------------------------------------------------
+	void setNickname(const std::string &);
+	void setUsername(const std::string &);
+	void setFullname(const std::string &);
+	void setAuthenticated(bool);
+	void setPassOk(bool);
+};
