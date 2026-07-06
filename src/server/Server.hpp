@@ -39,6 +39,14 @@ class Server
 	void nick(Client &client, std::vector<std::string> &params);
 	void user(Client &client, std::vector<std::string> &params);
 	void join(Client &client, std::vector<std::string> &params);
+	void privmsg(Client &client, std::vector<std::string> &params);
+	void part(Client &client, std::vector<std::string> &params);
+	void quit(Client &client, std::vector<std::string> &params);
+	void ping(Client &client, std::vector<std::string> &params);
+	void kick(Client &client, std::vector<std::string> &params);
+	void invite(Client &client, std::vector<std::string> &params);
+	void topic(Client &client, std::vector<std::string> &params);
+	void mode(Client &client, std::vector<std::string> &params);
 
 	/* ——— Channel management ——————————————————————————————————————————————— */
 	void addChannelToLst(Channel &);

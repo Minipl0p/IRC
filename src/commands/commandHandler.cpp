@@ -1,4 +1,5 @@
 
+#include "../reply/Reply.hpp"
 #include "../server/Server.hpp"
 #include <cctype>
 
@@ -22,7 +23,7 @@ void Server::executeCmd(Client &client, Message &msg)
 
 	std::map<std::string, Command>::iterator it = _commandsMap.find(cmd);
 	if (it == _commandsMap.end()) {
-		// CHECK QUOI FAIT LE PROTOCOLE IRC EN CAS DE COMMANDE INVALIDE
+		sendReply(client, ERR_UNKNOWNCOMMAND, cmd + " :Unknown command");
 		return;
 	}
 	(this->*(it->second))(client, msg.params);
@@ -34,6 +35,6 @@ void Server::tryRegister(Client &client)
 		return;
 	if (client.isPassOk() && !client.getNickname().empty() && !client.getUsername().empty()) {
 		client.setAuthenticated(true);
-		// QUOI RENVOYER
+		sendReply(client, RPL_WELCOME, ":Welcome to the IRC network, " + client.getNickname());
 	}
 }

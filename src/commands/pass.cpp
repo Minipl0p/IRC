@@ -1,20 +1,21 @@
 
+#include "../reply/Reply.hpp"
 #include "../server/Server.hpp"
 
 void Server::pass(Client &client, std::vector<std::string> &params)
 {
 	if (client.isAuthenticated()) {
-		// QUOI RENVOYER
+		sendReply(client, ERR_ALREADYREGISTRED, ":You may not reregister");
 		return;
 	}
 
 	if (params.empty()) {
-		// QUOI RENVOYER
+		sendReply(client, ERR_NEEDMOREPARAMS, "PASS :Not enough parameters");
 		return;
 	}
 
 	if (params[0] != _password) {
-		// QUOI RENVOYER
+		sendReply(client, ERR_PASSWDMISMATCH, ":Password incorrect");
 		return;
 	}
 
