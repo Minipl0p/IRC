@@ -1,5 +1,5 @@
 
-#include "00_Server.hpp"
+#include "../server/Server.hpp"
 
 static bool isValidNickname(const std::string &nick)
 {
@@ -19,26 +19,6 @@ static bool isValidNickname(const std::string &nick)
 	}
 
 	return true;
-}
-
-void Server::pass(Client &client, std::vector<std::string> &params)
-{
-	if (client.isAuthenticated()) {
-		// QUOI RENVOYER
-		return;
-	}
-
-	if (params.empty()) {
-		// QUOI RENVOYER
-		return;
-	}
-
-	if (params[0] != _password) {
-		// QUOI RENVOYER
-		return;
-	}
-
-	client.setPassOk(true);
 }
 
 void Server::nick(Client &client, std::vector<std::string> &params)
@@ -72,37 +52,4 @@ void Server::nick(Client &client, std::vector<std::string> &params)
 	client.setNickname(newNick);
 
 	tryRegister(client);
-}
-
-void Server::user(Client &client, std::vector<std::string> &params)
-{
-	if (!client.isPassOk()) {
-		// QUOI RENVOYER
-		return;
-	}
-	if (client.isAuthenticated()) {
-		// QUOI RENVOYER
-		return;
-	}
-
-	// USER need 4 params but only 2 are realisticly used : <username> <mode> <unused> :<realname>
-	if (params.size() < 4) {
-		// QUOI RENVOYER
-		return;
-	}
-
-	client.setUsername(params[0]);
-	client.setFullname(params[3]);
-
-	tryRegister(client);
-}
-
-void Server::tryRegister(Client &client)
-{
-	if (client.isAuthenticated())
-		return;
-	if (client.isPassOk() && !client.getNickname().empty() && !client.getUsername().empty()) {
-		client.setAuthenticated(true);
-		// QUOI RENVOYER
-	}
 }

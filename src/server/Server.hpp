@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 
-#include "../clients/00_Client.hpp"
-#include "00_Message.hpp"
+#include "../clients/Client.hpp"
+#include "../parsing/Message.hpp"
 
 class Channel;
 typedef int fd;
@@ -41,6 +41,7 @@ class Server
 	void nick(Client &client, std::vector<std::string> &params);
 	void user(Client &client, std::vector<std::string> &params);
 	void join(Client &client, std::vector<std::string> &params);
+	void initCommands();
 	// [...]
 
 	std::map<fd, Client *> _listeningClientsMap;

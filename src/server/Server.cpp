@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "00_Server.hpp"
+#include "Server.hpp"
 
 /* ——— Constructor & Destructor ————————————————————————————————————————————— */
 Server::Server()
@@ -21,26 +21,6 @@ Server::Server()
 /* ——— Getters & Setters ———————————————————————————————————————————————————— */
 
 /* ——— Functions         ———————————————————————————————————————————————————— */
-
-void Server::executeCmd(Client &client, Message &msg)
-{
-	if (msg.command.empty())
-		return;
-
-	// toupper the command because IRC protocole is not case sensitive
-	std::string cmd = msg.command;
-	for (size_t i = 0; i < cmd.size(); i++)
-		cmd[i] = std::toupper(cmd[i]);
-
-	// 3. Chercher la commande dans la map
-	std::map<std::string, Command>::iterator it = _commandsMap.find(cmd);
-
-	if (it == _commandsMap.end()) {
-		// CHECK QUOI FAIT LE PROTOCOLE IRC EN CAS DE COMMANDE INVALIDE
-		return;
-	}
-	(this->*(it->second))(client, msg.params);
-}
 
 void Server::handleClientData(Client &client)
 {
@@ -55,4 +35,3 @@ void Server::handleClientData(Client &client)
 		executeCmd(client, msg);
 	}
 }
-
