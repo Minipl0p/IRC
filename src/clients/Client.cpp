@@ -1,7 +1,7 @@
 
 #include "00_Client.hpp"
 
-Client::Client(int fd) : _fd(fd) {}
+Client::Client(int fd) : _fd(fd), _authenticated(false), _passOk(false) {}
 
 Client::~Client() {}
 

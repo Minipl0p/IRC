@@ -19,7 +19,7 @@
 #include "../clients/00_Client.hpp"
 #include "00_Message.hpp"
 
-typedef Channel;
+class Channel;
 typedef int fd;
 
 class Server
@@ -36,6 +36,7 @@ class Server
 	std::map<std::string, Command> _commandsMap; // Liste de commande
 	// Proto: void name (Client &client, std::vector<std::string> &params)
 	// CommandsMap
+	void tryRegister(Client &client);
 	void pass(Client &client, std::vector<std::string> &params);
 	void nick(Client &client, std::vector<std::string> &params);
 	void user(Client &client, std::vector<std::string> &params);
@@ -56,7 +57,7 @@ class Server
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
 	std::vector<pollfd>					 &getLstFds() { return _pollfds; }
 	const std::map<std::string, Command> &getCommandsMap() { return _commandsMap; }
-	std::map<fd, Client &>				 &getListeningClientsMap() { return _listeningClientsMap; }
+	std::map<fd, Client *>				 &getListeningClientsMap() { return _listeningClientsMap; }
 
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
 	// Clients

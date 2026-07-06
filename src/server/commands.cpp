@@ -1,21 +1,38 @@
 
 #include "00_Server.hpp"
 
+static bool isValidNickname(const std::string &nick)
+{
+	if (nick.empty() || nick.size() > 9)
+		return false;
+
+	const std::string special = "[]\\`_^{|}-";
+
+	char c = nick[0];
+	if (!std::isalpha(c) && special.find(c) == std::string::npos)
+		return false;
+
+	for (size_t i = 1; i < nick.size(); i++) {
+		c = nick[i];
+		if (!std::isalnum(c) && special.find(c) == std::string::npos)
+			return false;
+	}
+
+	return true;
+}
+
 void Server::pass(Client &client, std::vector<std::string> &params)
 {
-	// Already authentificated
 	if (client.isAuthenticated()) {
 		// QUOI RENVOYER
 		return;
 	}
 
-	// No params -> error
 	if (params.empty()) {
 		// QUOI RENVOYER
 		return;
 	}
 
-	// Check password
 	if (params[0] != _password) {
 		// QUOI RENVOYER
 		return;
@@ -26,13 +43,11 @@ void Server::pass(Client &client, std::vector<std::string> &params)
 
 void Server::nick(Client &client, std::vector<std::string> &params)
 {
-	// is password was send first
 	if (!client.isPassOk()) {
 		// QUOI RENVOYER
 		return;
 	}
 
-	// Pseudo are necessary
 	if (params.empty()) {
 		// QUOI RENVOYER
 		return;
@@ -40,9 +55,10 @@ void Server::nick(Client &client, std::vector<std::string> &params)
 
 	std::string newNick = params[0];
 
-	// 3. (optionnel mais propre) valider les caractères autorisés
-	//    Un pseudo IRC ne peut pas contenir espaces, ',', '*', etc.
-	//    Sinon → 432 ERR_ERRONEUSNICKNAME
+	if (!isValidNickname(newNick)) {
+		// QUOI RENVOYER
+		return;
+	}
 
 	// Is username already used
 	std::map<int, Client *>::iterator it;
@@ -60,7 +76,6 @@ void Server::nick(Client &client, std::vector<std::string> &params)
 
 void Server::user(Client &client, std::vector<std::string> &params)
 {
-	// first checks
 	if (!client.isPassOk()) {
 		// QUOI RENVOYER
 		return;
@@ -70,14 +85,24 @@ void Server::user(Client &client, std::vector<std::string> &params)
 		return;
 	}
 
-	// USER need 4 params : <username> <mode> <unused> :<realname>
+	// USER need 4 params but only 2 are realisticly used : <username> <mode> <unused> :<realname>
 	if (params.size() < 4) {
-		// sendReply(client, 461, "USER :Not enough parameters");
+		// QUOI RENVOYER
 		return;
 	}
 
 	client.setUsername(params[0]);
-	client.setRealname(params[3]);
+	client.setFullname(params[3]);
 
 	tryRegister(client);
+}
+
+void Server::tryRegister(Client &client)
+{
+	if (client.isAuthenticated())
+		return;
+	if (client.isPassOk() && !client.getNickname().empty() && !client.getUsername().empty()) {
+		client.setAuthenticated(true);
+		// QUOI RENVOYER
+	}
 }
