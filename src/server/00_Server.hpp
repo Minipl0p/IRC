@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/03 14:47:10 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/06 12:17:41 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <vector>
 #include <poll.h>
 #include <iostream>
+#include <netinet/in.h> //socketadress
+#include <sys/socket.h>
 
 typedef Client;
 typedef Channel;
@@ -33,6 +35,9 @@ class Server
 		std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
 	
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
+		//Init
+		void initServ();
+
 		// Clients
 		void addClientsToLst(Client &);
 		bool findClientsToLst(Client &)const;
@@ -49,6 +54,9 @@ class Server
 		void deleteChannelToLst(Channel &);
 
 	private:
+		int 		serverSocket;
+		sockaddr_in	serverAddress;
+	
 		std::vector<pollfd> _pollfds;
 			/* struct pollfd {
                int   fd;         file descriptor
