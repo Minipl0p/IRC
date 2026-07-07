@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/06 17:08:56 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/07 11:53:56 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include <iostream>
 #include <netinet/in.h> //socketadress
 #include <sys/socket.h>
+#include <cstdlib>
+#include <unistd.h>
 
 class Client;
 class Channel;
@@ -35,7 +37,7 @@ class Server
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
 		std::vector<pollfd>& getLstFds() { return _pollfds;}
 		const std::map<std::string, Command>& getCommandsMap() { return _commandsMap;}
-		std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
+		//std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
 		const int& getServerSocket() const { return _serverSocket;}
 		const sockaddr_in& getServerAddress() const {return _serverAddress;}
 		const pollfd& getServerFd() const {return _pollfds[0];}
@@ -77,8 +79,9 @@ class Server
 		void join(Client &client, std::vector<std::string> &params);
 		// [...]
 		
-		std::map<fd, Client&> _listeningClientsMap;
+		//std::map<fd, Client&> _listeningClientsMap;
 
 		std::map<std::string, Channel*> _lstChannels;
 		
 };
+
