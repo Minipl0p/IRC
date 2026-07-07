@@ -91,9 +91,9 @@ class Server
 	void handleClientData(Client &);
 
 	/* ——— Client management ———————————————————————————————————————————————— */
-	void	addClientsToLst(Client &);
+	void	addClientsToLst(Client *);
 	bool	findClientsToLst(Client &) const;
-	void	deleteClientsToLst(Client &);
+	void	deleteClientsToLst(Client &, std::vector<pollfd>::iterator &);
 	Client *isClientExistOnServer(std::string);
 
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */

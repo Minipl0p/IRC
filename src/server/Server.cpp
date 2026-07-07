@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 18:03:52 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/07 20:18:35 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,13 @@ Server::Server(int port, std::string password){
 		std::cout << error.what() << std::endl;
 		std::exit(-1);
 	}
+
+	initCommands();
 }
 
-Server::~Server() {}
+Server::~Server() {
+	// Destroy lst client
+}
 
 /* ——— Getters & Setters ———————————————————————————————————————————————————— */
 std::vector<pollfd>& Server::getLstFds() { return _pollfds;}
@@ -40,7 +44,7 @@ void Server::initServ(int port, std::string password){
 	
 	//AF_INET : IPv4 protocol
 	//SOCK_STREAM: TCP socket
-	(void)password;
+	this->_password = password;
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocket < 0){
 		throw std::runtime_error("ServerSocket failed.");

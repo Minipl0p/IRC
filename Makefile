@@ -6,7 +6,7 @@
 #    By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/13 11:16:05 by rcompain          #+#    #+#              #
-#    Updated: 2026/07/07 17:48:05 by rcompain         ###   ########.fr        #
+#    Updated: 2026/07/07 20:08:56 by rcompain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,7 @@ VPATH		:= $(SRC_DIR) \
 			   $(addprefix $(SRC_DIR)/, $(SUB_DIRS))
 
 # ——— Sources ——————————————————————————————————————————————————————————————— #
-SRC_SERVER	= Server.cpp
+SRC_SERVER	= Server.cpp clientManager.cpp
 
 SRC_CLIENTS	= Client.cpp
 
