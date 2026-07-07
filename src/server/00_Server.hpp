@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   00_Server.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 11:53:56 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/07 15:34:59 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ class Server
 {
 	public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
-		Server();
+		Server(int port, std::string password);
 		~Server(){};
 	
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
@@ -44,7 +44,7 @@ class Server
 	
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
 		//Init
-		void initServ();
+		void initServ(int port, std::string password);
 
 		// Clients
 		void addClientsToLst(Client &);
@@ -62,7 +62,7 @@ class Server
 		void deleteChannelToLst(Channel &);
 
 	private:
-		static const int 	_serverSocket;
+		int 	_serverSocket;
 		sockaddr_in	_serverAddress;
 	
 		std::vector<pollfd> _pollfds;
