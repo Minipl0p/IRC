@@ -48,10 +48,26 @@ class Server
 	void topic(Client &client, std::vector<std::string> &params);
 	void mode(Client &client, std::vector<std::string> &params);
 
+	/* ——— Command check helpers ———————————————————————————————————————————— */
+	bool	 requireRegistered(Client &client);
+	bool	 requireParams(Client					&client,
+						   std::vector<std::string> &params,
+						   size_t					 min,
+						   const std::string		&cmdName);
+	Channel *requireChannel(Client &client, const std::string &name);
+	Client	*requireClientByNick(Client &client, const std::string &nick);
+	bool	 requireMember(Client &client, Channel *chan);
+	bool	 requireOperator(Client &client, Channel *chan);
+	bool	 requireTargetInChannel(Client &asker, Client &target, Channel *chan);
+	bool	 requireTargetNotInChannel(Client &asker, Client &target, Channel *chan);
+	bool	 requireRecipient(Client &client, std::vector<std::string> &params);
+	bool	 requireTextToSend(Client &client, const std::string &text);
+
 	/* ——— Channel management ——————————————————————————————————————————————— */
 	void addChannelToLst(Channel &);
 	bool findChannelToLst(Channel &) const;
 	void deleteChannelToLst(Channel &);
+	void sendToChannel(const Channel &, std::string &) {}
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
@@ -65,9 +81,10 @@ class Server
 	void handleClientData(Client &);
 
 	/* ——— Client management ———————————————————————————————————————————————— */
-	void addClientsToLst(Client &);
-	bool findClientsToLst(Client &) const;
-	void deleteClientsToLst(Client &);
+	void	addClientsToLst(Client &);
+	bool	findClientsToLst(Client &) const;
+	void	deleteClientsToLst(Client &);
+	Client *isClientExistOnServer(std::string);
 
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
 	std::vector<pollfd>					 &getLstFds();
