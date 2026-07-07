@@ -80,9 +80,14 @@ void Server::handleClientData(Client &client)
 	std::string &buf = client.getReadBuffer();
 	size_t		 pos;
 
-	while ((pos = buf.find("\r\n")) != std::string::npos) {
-		std::string line = buf.substr(0, pos);
-		buf.erase(0, pos + 2);
+	// Accepte "\r\n" (RFC) et "\n" seul (clients/tests moins stricts), jamais l'inverse en sortie.
+	while ((pos = buf.find('\n')) != std::string::npos) {
+		size_t lineLen = pos;
+		if (lineLen > 0 && buf[lineLen - 1] == '\r')
+			lineLen--;
+
+		std::string line = buf.substr(0, lineLen);
+		buf.erase(0, pos + 1);
 
 		Message msg = tokenizeLine(line);
 		executeCmd(client, msg);
