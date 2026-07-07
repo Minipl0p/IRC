@@ -6,11 +6,12 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 11:57:26 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 22:57:32 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/08 00:24:16 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "server/Server.hpp"
+#include "signals/signal.hpp"
 #include <fstream>
 
 int main(int ac, char **av){
@@ -20,17 +21,19 @@ int main(int ac, char **av){
 		return -1;
 	}
 	
+	init_signals();
+	
 	std::string password(av[2]);
 	Server server(std::atoi(av[1]), password);
 	const int POLL_TIMEOUT_MS = 3 * 60 * 1000;
 
-	for(;;){
+	for(;g_running == 1;){
 
 		// Check de poll sur fd du serveur
 		if (poll(server.getLstFds().data() ,static_cast<nfds_t>(server.getLstFds().size()), POLL_TIMEOUT_MS) < 0){
-			std::cerr << "Poll failed." << std::endl;
-			close(server.getServerSocket());
-			return 1;
+			if (g_running == 1)
+				std::cerr << "Poll failed." << std::endl;
+			break;
 		}
 
 		if (server.getServerFd().revents & POLLIN)
@@ -44,6 +47,9 @@ int main(int ac, char **av){
 				++it;
 		}
 	}
+
+	if (g_running == 0)
+		std::cerr << std::endl;
 
 	close(server.getServerSocket());
 	

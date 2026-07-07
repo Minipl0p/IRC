@@ -6,7 +6,7 @@
 #    By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/13 11:16:05 by rcompain          #+#    #+#              #
-#    Updated: 2026/07/07 20:08:56 by rcompain         ###   ########.fr        #
+#    Updated: 2026/07/08 00:12:02 by rcompain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ SRC_DIR		= src
 OBJ_DIR		= obj
 
 # --- Sous-dossiers sources --------------------------------------------------
-SUB_DIRS	:= server clients channels server/commands reply parsing
+SUB_DIRS	:= server clients channels server/commands reply parsing signals
 
 VPATH		:= $(SRC_DIR) \
 			   $(addprefix $(SRC_DIR)/, $(SUB_DIRS))
@@ -38,8 +38,10 @@ SRC_REPLY	 = Reply.cpp
 
 SRC_PARSING	 = message.cpp
 
+SRC_SIGNALS	 = signal.cpp
 
-SRCS		= main.cpp $(SRC_SERVER) $(SRC_CLIENTS) $(SRC_CHANNELS) $(SRC_COMMANDS) $(SRC_REPLY) $(SRC_PARSING)
+
+SRCS		= main.cpp $(SRC_SERVER) $(SRC_CLIENTS) $(SRC_CHANNELS) $(SRC_COMMANDS) $(SRC_REPLY) $(SRC_PARSING) $(SRC_SIGNALS)
 
 OBJ			= ${SRCS:%.cpp=$(OBJ_DIR)/%.o}
 
