@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 20:18:35 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/07 23:31:14 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void Server::handleClientData(Client &client)
 	std::string &buf = client.getReadBuffer();
 	size_t		 pos;
 
-	// Accepte "\r\n" (RFC) et "\n" seul (clients/tests moins stricts), jamais l'inverse en sortie.
+	// Accepte "\r\n" (RFC) et "\n" seul
 	while ((pos = buf.find('\n')) != std::string::npos) {
 		size_t lineLen = pos;
 		if (lineLen > 0 && buf[lineLen - 1] == '\r')
