@@ -1,6 +1,6 @@
 
-#include "../reply/Reply.hpp"
-#include "../server/Server.hpp"
+#include "../../reply/Reply.hpp"
+#include "../Server.hpp"
 
 void Server::pass(Client &client, std::vector<std::string> &params)
 {

@@ -1,6 +1,6 @@
 
-#include "../channels/Channel.hpp"
-#include "../server/Server.hpp"
+#include "../../channels/Channel.hpp"
+#include "../Server.hpp"
 
 void Server::kick(Client &client, std::vector<std::string> &params)
 {

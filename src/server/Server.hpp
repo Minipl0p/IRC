@@ -6,18 +6,25 @@
 #include <poll.h>
 #include <string>
 #include <vector>
+#include <netinet/in.h> //socketadress
+#include <sys/socket.h>
+#include <cstdlib>
+#include <unistd.h>
+#include <errno.h>
 
 #include "../clients/Client.hpp"
 #include "../parsing/Message.hpp"
+#include "../channels/Channel.hpp"
 
 /* ——— Forward declarations ————————————————————————————————————————————————— */
-class Channel;
 
 typedef int fd;
+class Server;
+typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
 
 class Server
 {
-	typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
+	
 
   private:
 	/* ——— Attributes ——————————————————————————————————————————————————————— */
@@ -26,9 +33,12 @@ class Server
 	std::map<fd, Client *>			 _listeningClientsMap;
 	std::map<std::string, Channel *> _lstChannels;
 	std::map<std::string, Command>	 _commandsMap;
+	int 							 _serverSocket;
+	sockaddr_in						 _serverAddress;
 
 	/* ——— Setup ———————————————————————————————————————————————————————————— */
 	void initCommands();
+	void initServ(int port, std::string password);
 
 	/* ——— Command routing —————————————————————————————————————————————————— */
 	void executeCmd(Client &client, Message &msg);
@@ -67,14 +77,14 @@ class Server
 	void addChannelToLst(Channel &);
 	bool findChannelToLst(Channel &) const;
 	void deleteChannelToLst(Channel &);
-	void sendToChannel(const Channel &, std::string &) {}
+	void sendToChannel(const Channel &, std::string &);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
 
   public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
-	Server();
+	Server(int port, std::string password);
 	~Server();
 
 	/* ——— Main entry point ————————————————————————————————————————————————— */
@@ -90,4 +100,7 @@ class Server
 	std::vector<pollfd>					 &getLstFds();
 	const std::map<std::string, Command> &getCommandsMap();
 	std::map<fd, Client *>				 &getListeningClientsMap();
+	const int							 &getServerSocket() const;
+	const sockaddr_in					 &getServerAddress() const;
+	const pollfd						 &getServerFd() const;
 };

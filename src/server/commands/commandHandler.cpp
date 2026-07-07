@@ -1,6 +1,6 @@
 
-#include "../reply/Reply.hpp"
-#include "../server/Server.hpp"
+#include "../../reply/Reply.hpp"
+#include "../Server.hpp"
 #include <cctype>
 
 void Server::initCommands()
