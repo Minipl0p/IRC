@@ -3,20 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   00_Server.hpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rcompain <rcompain@student.42.fr>          +#+  +:+       +#+        */
+/*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:12 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/03 14:47:10 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/07 15:34:59 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#pragma once
 
 #include <map>
 #include <vector>
 #include <poll.h>
 #include <iostream>
+#include <netinet/in.h> //socketadress
+#include <sys/socket.h>
+#include <cstdlib>
+#include <unistd.h>
 
-typedef Client;
-typedef Channel;
+class Client;
+class Channel;
+class Server;
 typedef void (Server::*Command)(Client &client, std::vector<std::string> &params);
 typedef int fd;
 
@@ -24,15 +31,21 @@ class Server
 {
 	public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
-		Server();
+		Server(int port, std::string password);
 		~Server(){};
 	
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
 		std::vector<pollfd>& getLstFds() { return _pollfds;}
 		const std::map<std::string, Command>& getCommandsMap() { return _commandsMap;}
-		std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
+		//std::map<fd, Client&>& getListeningClientsMap() { return _listeningClientsMap;}
+		const int& getServerSocket() const { return _serverSocket;}
+		const sockaddr_in& getServerAddress() const {return _serverAddress;}
+		const pollfd& getServerFd() const {return _pollfds[0];}
 	
 	/* ——— Methodes ————————————————————————————————————————————————————————— */
+		//Init
+		void initServ(int port, std::string password);
+
 		// Clients
 		void addClientsToLst(Client &);
 		bool findClientsToLst(Client &)const;
@@ -49,6 +62,9 @@ class Server
 		void deleteChannelToLst(Channel &);
 
 	private:
+		int 	_serverSocket;
+		sockaddr_in	_serverAddress;
+	
 		std::vector<pollfd> _pollfds;
 			/* struct pollfd {
                int   fd;         file descriptor
@@ -63,8 +79,9 @@ class Server
 		void join(Client &client, std::vector<std::string> &params);
 		// [...]
 		
-		std::map<fd, Client&> _listeningClientsMap;
+		//std::map<fd, Client&> _listeningClientsMap;
 
 		std::map<std::string, Channel*> _lstChannels;
 		
 };
+
