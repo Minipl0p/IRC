@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 11:57:26 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 21:09:01 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/07 22:57:32 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,44 +22,26 @@ int main(int ac, char **av){
 	
 	std::string password(av[2]);
 	Server server(std::atoi(av[1]), password);
-	int timeout = (3 * 60 * 1000);
+	const int POLL_TIMEOUT_MS = 3 * 60 * 1000;
 
 	for(;;){
 
 		// Check de poll sur fd du serveur
-		if (poll(server.getLstFds().data() ,static_cast<nfds_t>(server.getLstFds().size()), timeout) < 0){
+		if (poll(server.getLstFds().data() ,static_cast<nfds_t>(server.getLstFds().size()), POLL_TIMEOUT_MS) < 0){
 			std::cerr << "Poll failed." << std::endl;
 			close(server.getServerSocket());
-			return 1; 
-		}
-		if (server.getServerFd().revents & POLLIN){
-			int newClientSocket = accept(server.getServerSocket(), NULL, NULL);
-			if (newClientSocket < 0)
-				continue;
-			server.getLstFds().push_back((struct pollfd){ newClientSocket, POLLIN, 0}); // Mettre le bon flag
-			server.addClientsToLst(new Client(newClientSocket)); // Rempli la liste de clients (a destroy)
+			return 1;
 		}
 
-		// Boucle de check de poll sur les autre fd
-		for (std::vector<pollfd>::iterator it = server.getLstFds().begin() + 1; it != server.getLstFds().end(); it++){
-			
-			// Check revents sur CLient
-			if ((*it).revents & POLLIN){
-				char buf[4096];
-				int fdClient = (*it).fd;
-				
-				int res = recv(fdClient, &buf, sizeof(buf), 0);
-				
-				if (res <= 0){ // Deconection du client
-					server.deleteClientsToLst(*(server.getListeningClientsMap().find(fdClient)->second), it);
-					it--; // it-- pour compenser le it++ du for car it = erase() dans deleteClientsToLst()
-					continue;
-				}
+		if (server.getServerFd().revents & POLLIN)
+			server.acceptNewClient();
 
-				std::string &readBuffer = server.getListeningClientsMap()[(*it).fd]->getReadBuffer();
-				readBuffer += std::string(buf, res);
-				server.handleClientData(*(server.getListeningClientsMap()[(*it).fd]));
-			}
+		// Boucle de check de poll sur les autres fd
+		for (std::vector<pollfd>::iterator it = server.getLstFds().begin() + 1; it != server.getLstFds().end();){
+			if (it->revents & POLLIN)
+				it = server.handleClientEvent(it);
+			else
+				++it;
 		}
 	}
 
