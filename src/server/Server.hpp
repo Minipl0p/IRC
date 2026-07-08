@@ -90,10 +90,14 @@ class Server
 	/* ——— Main entry point ————————————————————————————————————————————————— */
 	void handleClientData(Client &);
 
+	/* ——— Life loop server ————————————————————————————————————————————————— */
+	void						 	acceptNewClient();
+	std::vector<pollfd>::iterator 	handleClientEvent(std::vector<pollfd>::iterator it);
+
 	/* ——— Client management ———————————————————————————————————————————————— */
-	void	addClientsToLst(Client &);
+	void	addClientsToLst(Client *);
 	bool	findClientsToLst(Client &) const;
-	void	deleteClientsToLst(Client &);
+	void	deleteClientsToLst(Client &, std::vector<pollfd>::iterator &);
 	Client *isClientExistOnServer(std::string);
 
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
