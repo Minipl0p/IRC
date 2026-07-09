@@ -1,22 +1,22 @@
 
 #pragma once
 
-#include <iostream>
-#include <map>
-#include <poll.h>
-#include <string>
-#include <cstring>
-#include <vector>
-#include <netinet/in.h> //socketadress
-#include <sys/socket.h>
 #include <cstdlib>
-#include <unistd.h>
+#include <cstring>
 #include <errno.h>
 #include <fcntl.h>
+#include <iostream>
+#include <map>
+#include <netinet/in.h> //socketadress
+#include <poll.h>
+#include <string>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <vector>
 
+#include "../channels/Channel.hpp"
 #include "../clients/Client.hpp"
 #include "../parsing/Message.hpp"
-#include "../channels/Channel.hpp"
 
 /* ——— Forward declarations ————————————————————————————————————————————————— */
 
@@ -26,8 +26,6 @@ typedef void (Server::*Command)(Client &client, std::vector<std::string> &params
 
 class Server
 {
-	
-
   private:
 	/* ——— Attributes ——————————————————————————————————————————————————————— */
 	std::string						 _password;
@@ -35,7 +33,7 @@ class Server
 	std::map<fd, Client *>			 _listeningClientsMap;
 	std::map<std::string, Channel *> _lstChannels;
 	std::map<std::string, Command>	 _commandsMap;
-	int 							 _serverSocket;
+	int								 _serverSocket;
 	sockaddr_in						 _serverAddress;
 
 	/* ——— Setup ———————————————————————————————————————————————————————————— */
@@ -93,8 +91,8 @@ class Server
 	void handleClientData(Client &);
 
 	/* ——— Life loop server ————————————————————————————————————————————————— */
-	void						 	acceptNewClient();
-	std::vector<pollfd>::iterator 	handleClientEvent(std::vector<pollfd>::iterator it);
+	void						  acceptNewClient();
+	std::vector<pollfd>::iterator handleClientEvent(std::vector<pollfd>::iterator it);
 
 	/* ——— Client management ———————————————————————————————————————————————— */
 	void	addClientsToLst(Client *);

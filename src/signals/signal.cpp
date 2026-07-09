@@ -14,19 +14,18 @@
 
 volatile sig_atomic_t g_running = 1;
 
-static void	handler(int sig)
+static void handler(int sig)
 {
 	if (sig == SIGINT)
 		g_running = 0;
 }
 
-void	init_signals(void)
+void init_signals(void)
 {
-	struct sigaction	sa;
+	struct sigaction sa;
 
 	sigemptyset(&sa.sa_mask);
 	sa.sa_handler = handler;
-	sa.sa_flags = SA_RESTART;
+	sa.sa_flags	  = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
-
 }

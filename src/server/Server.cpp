@@ -41,19 +41,19 @@ const sockaddr_in	   &Server::getServerAddress() const { return _serverAddress; 
 const pollfd		   &Server::getServerFd() const { return _pollfds[0]; }
 
 /* ——— Functions         ———————————————————————————————————————————————————— */
-void Server::initServ(int port, std::string password){
-	
-	//AF_INET : IPv4 protocol
-	//SOCK_STREAM: TCP socket
+void Server::initServ(int port, std::string password)
+{
+	// AF_INET : IPv4 protocol
+	// SOCK_STREAM: TCP socket
 	this->_password = password;
-	
+
 	// Gestion du socket du serveur
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocket < 0) {
 		throw std::runtime_error("ServerSocket failed.");
 	}
 	fcntl(_serverSocket, F_SETFL, O_NONBLOCK);
-	this->_pollfds.push_back((struct pollfd){ _serverSocket, POLLIN, 0});
+	this->_pollfds.push_back((struct pollfd){_serverSocket, POLLIN, 0});
 
 	// Initialisation de la structure serverAddress
 	std::memset(&(_serverAddress), 0, sizeof(_serverAddress));
