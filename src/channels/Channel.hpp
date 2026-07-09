@@ -64,4 +64,5 @@ class Channel
 	bool isInvited(Client &client) const;
 };
 
-typedef std::map<std::string, Channel *>::iterator ChanIt;
+typedef std::map<std::string, Channel *>::iterator		ChanIt;
+typedef std::map<std::string, Client *>::const_iterator CliIt;
