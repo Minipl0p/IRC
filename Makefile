@@ -26,7 +26,7 @@ VPATH		:= $(SRC_DIR) \
 			   $(addprefix $(SRC_DIR)/, $(SUB_DIRS))
 
 # ——— Sources ——————————————————————————————————————————————————————————————— #
-SRC_SERVER	= Server.cpp clientManager.cpp
+SRC_SERVER	= Server.cpp clientManager.cpp channelManager.cpp
 
 SRC_CLIENTS	= Client.cpp
 

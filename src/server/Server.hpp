@@ -77,7 +77,7 @@ class Server
 	void addChannelToLst(Channel &);
 	bool findChannelToLst(Channel &) const;
 	void deleteChannelToLst(Channel &);
-	void sendToChannel(const Channel &, std::string &);
+	void sendToChannel(const Channel &, std::string &, const std::string &);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
@@ -108,3 +108,5 @@ class Server
 	const sockaddr_in					 &getServerAddress() const;
 	const pollfd						 &getServerFd() const;
 };
+
+typedef std::map<fd, Client *>::iterator CliFdIt;

@@ -28,6 +28,8 @@ size_t Channel::membreCount() const { return _membres.size(); }
 
 const std::map<std::string, Client *> &Channel::getMembres() const { return _membres; }
 
+std::map<std::string, Client *> &Channel::getMembres() { return _membres; }
+
 void Channel::addModerator(Client &client) { _moderators[client.getNickname()] = &client; }
 
 void Channel::removeModerator(Client &client) { _moderators.erase(client.getNickname()); }

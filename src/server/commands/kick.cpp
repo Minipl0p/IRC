@@ -25,7 +25,7 @@ void Server::kick(Client &client, std::vector<std::string> &params)
 
 	std::string msg =
 		":" + client.getNickname() + " KICK " + chan->getName() + " " + params[1] + " :" + comment;
-	sendToChannel(*chan, msg);
+	sendToChannel(*chan, msg, "");
 
 	chan->removeMembre(*target);
 }

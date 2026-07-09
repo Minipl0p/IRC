@@ -101,8 +101,3 @@ bool Server::requireTextToSend(Client &client, const std::string &text)
 	}
 	return true;
 }
-
-Client *Server::isClientExistOnServer(std::string str){
-	(void)str;
-	return NULL;
-}

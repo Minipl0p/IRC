@@ -21,10 +21,7 @@ void Server::deleteClientsToLst(Client &client, std::vector<pollfd>::iterator &i
 {
 	close(client.getFd());
 
-	// retire Le client de la liste des clients
 	_listeningClientsMap.erase(client.getFd());
-
-	// retire le client de la liste des fds
 	it = _pollfds.erase(it);
 
 	delete &client;
@@ -65,4 +62,18 @@ std::vector<pollfd>::iterator Server::handleClientEvent(std::vector<pollfd>::ite
 	client->getReadBuffer() += std::string(buf, res);
 	handleClientData(*client);
 	return ++it;
+}
+
+Client *Server::isClientExistOnServer(std::string nick)
+{
+	for (CliFdIt it = _listeningClientsMap.begin(); it != _listeningClientsMap.end(); ++it) {
+		if (it->second->getNickname() == nick)
+			return it->second;
+	}
+	return NULL;
+}
+
+bool Server::findClientsToLst(Client &client) const
+{
+	return _listeningClientsMap.find(client.getFd()) != _listeningClientsMap.end();
 }
