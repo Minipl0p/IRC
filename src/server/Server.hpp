@@ -5,12 +5,14 @@
 #include <map>
 #include <poll.h>
 #include <string>
+#include <cstring>
 #include <vector>
 #include <netinet/in.h> //socketadress
 #include <sys/socket.h>
 #include <cstdlib>
 #include <unistd.h>
 #include <errno.h>
+#include <fcntl.h>
 
 #include "../clients/Client.hpp"
 #include "../parsing/Message.hpp"

@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 20:07:49 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 22:59:17 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/09 09:09:04 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ void Server::acceptNewClient()
 		std::cerr << "Accept failed." << std::endl;
 		return;
 	}
+
+	fcntl(newClientSocket, F_SETFL, O_NONBLOCK);
 
 	_pollfds.push_back((struct pollfd){ newClientSocket, POLLIN, 0 });
 	addClientsToLst(new Client(newClientSocket));
