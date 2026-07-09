@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 11:57:26 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/08 00:24:16 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/09 09:03:34 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,9 @@ int main(int ac, char **av){
 		if (poll(server.getLstFds().data() ,static_cast<nfds_t>(server.getLstFds().size()), POLL_TIMEOUT_MS) < 0){
 			if (g_running == 1)
 				std::cerr << "Poll failed." << std::endl;
-			break;
+			else
+				std::cerr << std::endl;
+			return 1;
 		}
 
 		if (server.getServerFd().revents & POLLIN)
@@ -47,9 +49,6 @@ int main(int ac, char **av){
 				++it;
 		}
 	}
-
-	if (g_running == 0)
-		std::cerr << std::endl;
 
 	close(server.getServerSocket());
 	
