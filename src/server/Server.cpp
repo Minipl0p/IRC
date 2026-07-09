@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 23:31:14 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/09 09:13:12 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,16 +41,22 @@ const sockaddr_in	   &Server::getServerAddress() const { return _serverAddress; 
 const pollfd		   &Server::getServerFd() const { return _pollfds[0]; }
 
 /* ——— Functions         ———————————————————————————————————————————————————— */
-void Server::initServ(int port, std::string password)
-{
-	// AF_INET : IPv4 protocol
-	// SOCK_STREAM: TCP socket
-	this->_password		= password;
+void Server::initServ(int port, std::string password){
+	
+	//AF_INET : IPv4 protocol
+	//SOCK_STREAM: TCP socket
+	this->_password = password;
+	
+	// Gestion du socket du serveur
 	this->_serverSocket = socket(AF_INET, SOCK_STREAM, 0);
 	if (_serverSocket < 0) {
 		throw std::runtime_error("ServerSocket failed.");
 	}
-	this->_pollfds.push_back((struct pollfd){_serverSocket, POLLIN, 0});
+	fcntl(_serverSocket, F_SETFL, O_NONBLOCK);
+	this->_pollfds.push_back((struct pollfd){ _serverSocket, POLLIN, 0});
+
+	// Initialisation de la structure serverAddress
+	std::memset(&(_serverAddress), 0, sizeof(_serverAddress));
 	this->_serverAddress.sin_family = AF_INET;
 	this->_serverAddress.sin_port	= htons(port);
 	std::cout << this->_serverAddress.sin_port << std::endl;
