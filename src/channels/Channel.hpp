@@ -30,7 +30,7 @@ class Channel
 	/* ——— Members —————————————————————————————————————————————————————————— */
 	void								   addMembre(Client &client);
 	void								   removeMembre(Client &client);
-	bool								   isMembre(Client &client) const;
+	bool								   isMember(Client &client) const;
 	bool								   isEmptyChannel() const;
 	size_t								   membreCount() const;
 	const std::map<std::string, Client *> &getMembres() const;

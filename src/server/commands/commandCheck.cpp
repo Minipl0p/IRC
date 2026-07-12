@@ -2,6 +2,7 @@
 #include "../../channels/Channel.hpp"
 #include "../../reply/Reply.hpp"
 #include "../Server.hpp"
+#include <cstddef>
 
 bool Server::requireRegistered(Client &client)
 {
@@ -102,7 +103,8 @@ bool Server::requireTextToSend(Client &client, const std::string &text)
 	return true;
 }
 
-Client *Server::isClientExistOnServer(std::string str){
+Client *Server::isClientExistOnServer(std::string str)
+{
 	(void)str;
 	return NULL;
 }

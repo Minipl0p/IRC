@@ -17,7 +17,7 @@ void Channel::removeMembre(Client &client)
 	_moderators.erase(client.getNickname());
 }
 
-bool Channel::isMembre(Client &client) const
+bool Channel::isMember(Client &client) const
 {
 	return _membres.find(client.getNickname()) != _membres.end();
 }
