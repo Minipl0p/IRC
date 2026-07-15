@@ -69,3 +69,9 @@ bool Channel::isInvited(Client &client) const
 {
 	return _invited.find(client.getNickname()) != _invited.end();
 }
+
+bool Channel::keyIsValid(const std::string &key){
+	if (key == _key)
+		return true;
+	return false;
+}

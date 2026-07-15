@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/07 18:03:52 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/15 15:50:43 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,4 +83,19 @@ void Server::handleClientData(Client &client)
 		Message msg = tokenizeLine(line);
 		executeCmd(client, msg);
 	}
+}
+
+
+/* ——— Channel management ——————————————————————————————————————————————— */
+void Server::addChannelToLst(Channel &src){
+	_lstChannels[src.getName()] = &src;
+}
+bool Server::findChannelToLst(std::string &name) const{
+	std::map<std::string, Channel *>::const_iterator it = _lstChannels.find(name);
+	if (it == _lstChannels.end())
+		return false;
+	return true;
+}
+void Server::deleteChannelToLst(Channel &src){
+	_lstChannels.erase(src.getName());
 }

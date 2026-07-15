@@ -75,9 +75,9 @@ class Server
 
 	/* ——— Channel management ——————————————————————————————————————————————— */
 	void addChannelToLst(Channel &);
-	bool findChannelToLst(Channel &) const;
+	bool findChannelToLst(std::string &name) const;
 	void deleteChannelToLst(Channel &);
-	void sendToChannel(const Channel &, std::string &);
+	void sendToChannel(const Channel &, const std::string &);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
