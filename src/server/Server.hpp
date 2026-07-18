@@ -76,7 +76,7 @@ class Server
 	/* ——— Channel management ——————————————————————————————————————————————— */
 	void addChannelToLst(Channel &);
 	bool findChannelToLst(std::string &name) const;
-	void deleteChannelToLst(Channel &);
+	void deleteChannelToLst(Channel *);
 	void sendToChannel(const Channel &, const std::string &);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */

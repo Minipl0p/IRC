@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/15 15:50:43 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/18 16:19:47 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ bool Server::findChannelToLst(std::string &name) const{
 		return false;
 	return true;
 }
-void Server::deleteChannelToLst(Channel &src){
-	_lstChannels.erase(src.getName());
+void Server::deleteChannelToLst(Channel *src){
+	_lstChannels.erase(src->getName());
+	delete src;
 }
