@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/18 16:19:47 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/18 17:41:41 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ Server::~Server() {}
 std::vector<pollfd>& Server::getLstFds() { return _pollfds;}
 const std::map<std::string, Command>& Server::getCommandsMap() { return _commandsMap;}
 std::map<fd, Client*>& Server::getListeningClientsMap() { return _listeningClientsMap;}
+const std::map<std::string, Channel *> &Server::getLstChannels() { return _lstChannels;}
 const int& Server::getServerSocket() const { return _serverSocket;}
 const sockaddr_in& Server::getServerAddress() const {return _serverAddress;}
 const pollfd& Server::getServerFd() const {return _pollfds[0];}
@@ -98,5 +99,49 @@ bool Server::findChannelToLst(std::string &name) const{
 }
 void Server::deleteChannelToLst(Channel *src){
 	_lstChannels.erase(src->getName());
+	delete src;
+}
+
+/* ——— FdLst management ————————————————————————————————————————————————— */
+void 	Server::deletePollfdsToLst(const fd &srcFd){
+	std::vector<pollfd>::iterator pos = _pollfds.begin();
+	for (; pos != _pollfds.end(); ++pos){
+		if (pos->fd == srcFd)
+			break;
+	}
+	if (pos != _pollfds.end())
+		_pollfds.erase(pos);
+
+	close(srcFd);
+}
+
+/* ——— Client management ———————————————————————————————————————————————— */
+void	Server::addClientsToLst(Client &src){
+	_listeningClientsMap[src.getFd()] = &src;
+}
+bool	Server::findClientsToLst(fd &src) const{
+	std::map<fd, Client *>::const_iterator it = _listeningClientsMap.find(src);
+	if (it == _listeningClientsMap.end())
+		return false;
+	return true;
+}
+void	Server::deleteClientsToLst(Client *src, std::string &msg){
+
+	// enlever le client de chanque channel ou il est present
+	const std::map<std::string, Channel *> &lst = getLstChannels();
+	for (std::map<std::string, Channel *>::const_iterator it = lst.begin(); it != lst.end();){
+		Channel *chan = it->second;
+		++it;
+		if (chan->isMembre(*src)){
+			if (!msg.empty())
+				sendToChannel(*chan, msg);
+			chan->removeMembre(*src);
+			if (chan->isEmptyChannel())
+				deleteChannelToLst(chan);
+		}
+	}
+
+	_listeningClientsMap.erase(src->getFd());
+	deletePollfdsToLst(src->getFd());
 	delete src;
 }

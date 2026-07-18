@@ -6,7 +6,7 @@
 #    By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/04/13 11:16:05 by rcompain          #+#    #+#              #
-#    Updated: 2026/07/07 17:48:05 by rcompain         ###   ########.fr        #
+#    Updated: 2026/07/18 17:42:43 by rcompain         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,7 +57,7 @@ RED         = \033[38;5;210m
 
 # ——— Banner ———————————————————————————————————————————————————————————————— #
 define BANNER
-$(BOLD)$(ORANGE)\n  ██$(DIM)╗██████$(DIM)╗  ██████$(DIM)╗\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)╔════╝\n  ██$(DIM)║██████$(DIM)╔╝██$(DIM)║\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)║\n  ██$(DIM)║██║  ██$(DIM)║╚██████$(DIM)╗\n  ╚═╝╚═╝  ╚═╝ ╚═════╝$(R)\n$(DIM)                    by rcompain — 42 Angoulême\n\n$(R)
+$(BOLD)$(ORANGE)\n  ██$(DIM)╗██████$(DIM)╗  ██████$(DIM)╗\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)╔════╝\n  ██$(DIM)║██████$(DIM)╔╝██$(DIM)║\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)║\n  ██$(DIM)║██║  ██$(DIM)║╚██████$(DIM)╗\n  ╚═╝╚═╝  ╚═╝ ╚═════╝$(R)\n$(DIM)                    by rcompain & pchazalm — 42 Angoulême\n\n$(R)
 endef
 export BANNER
 
