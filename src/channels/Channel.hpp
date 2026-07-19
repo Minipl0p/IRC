@@ -50,6 +50,7 @@ class Channel
 	bool			   hasKey() const;
 	const std::string &getKey() const;
 	void			   setKey(const std::string &key);
+	bool			   keyIsValid(const std::string &key);
 	void			   removeKey();
 
 	/* ——— Limit members         ——————————————————————————————————————————— */

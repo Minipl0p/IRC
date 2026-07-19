@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 11:57:26 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/09 09:03:34 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/18 17:20:31 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,35 +20,44 @@ int main(int ac, char **av)
 		std::cerr << "Invalid numbers of arguments." << std::endl;
 		return -1;
 	}
-
-	init_signals();
-
+	
 	std::string password(av[2]);
-	Server		server(std::atoi(av[1]), password);
-	const int	POLL_TIMEOUT_MS = 3 * 60 * 1000;
+	Server server(std::atoi(av[1]), password);
+	const pollfd &fdServer = server.getServerFd();
+	int timeout = (3 * 60 * 1000);
 
-	for (; g_running == 1;) {
-		// Check de poll sur fd du serveur
-		if (poll(server.getLstFds().data(),
-				 static_cast<nfds_t>(server.getLstFds().size()),
-				 POLL_TIMEOUT_MS) < 0) {
-			if (g_running == 1)
-				std::cerr << "Poll failed." << std::endl;
-			else
-				std::cerr << std::endl;
-			return 1;
+	for(;;){
+
+		if (poll(server.getLstFds().data() ,static_cast<nfds_t>(server.getLstFds().size()), timeout) < 0){
+			std::cerr << "Poll failed." << std::endl;
+			close(server.getServerSocket());
+			return 1; 
 		}
 
-		if (server.getServerFd().revents & POLLIN)
-			server.acceptNewClient();
+		if (fdServer.revents & POLLIN){
+			int newClientSocket = accept(server.getServerSocket(), NULL, NULL);
+			if (newClientSocket < 0)
+				break;
+			server.getLstFds().push_back((struct pollfd){ newClientSocket, POLLIN, 0}); // Mettre le bon flag
+			Client *newClient = new Client(newClientSocket);
+			server.addClientsToLst(*newClient);
+		}
 
-		// Boucle de check de poll sur les autres fd
-		for (std::vector<pollfd>::iterator it = server.getLstFds().begin() + 1;
-			 it != server.getLstFds().end();) {
-			if (it->revents & POLLIN)
-				it = server.handleClientEvent(it);
-			else
-				++it;
+		//lecture des clients
+		for (size_t i = 1; i < server.getLstFds().size(); i++){
+			pollfd &fdClient = server.getLstFds()[i];
+			if (!(fdClient.revents & POLLIN))
+				continue;
+			Client *client = server.getListeningClientsMap()[fdClient.fd];
+			char buff[4096];
+			int n = recv(fdClient.fd, buff, sizeof(buff), 0);
+			if (n <= 0){ // deconnexion du client
+				std::string empty;
+				server.deleteClientsToLst(client, empty);
+				continue;
+			}
+			client->getReadBuffer().append(buff, n);
+			server.handleClientData(*client);
 		}
 	}
 
