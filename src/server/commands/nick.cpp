@@ -59,11 +59,19 @@ void Server::nick(Client &client, std::vector<std::string> &params)
 	}
 
 	std::string oldNick = client.getNickname();
+
+	for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it)
+		it->second->renameMember(oldNick, newNick);
+
 	client.setNickname(newNick);
+
 	if (!oldNick.empty()) {
 		std::string msg =
 			":" + oldNick + "!" + client.getUsername() + "@localhost NICK :" + newNick + "\r\n";
-		send(client.getFd(), msg.c_str(), msg.size(), 0);
+		for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
+			if (it->second->isMember(client))
+				sendToChannel(*it->second, msg, client); // exclut le client lui-même (déjà envoyé)
+		}
 	}
 
 	tryRegister(client);

@@ -70,6 +70,8 @@ bool Channel::isInvited(Client &client) const
 	return _invited.find(client.getNickname()) != _invited.end();
 }
 
+bool Channel::hasOperator() const { return !_moderators.empty(); }
+
 bool Channel::keyIsValid(const std::string &key)
 {
 	if (key == _key)
@@ -86,4 +88,20 @@ std::string Channel::getMembersList() const
 		list += it->first + " ";
 	}
 	return list;
+}
+
+void Channel::renameMember(const std::string &oldNick, const std::string &newNick)
+{
+	std::map<std::string, Client *>::iterator it = _members.find(oldNick);
+	if (it != _members.end()) {
+		Client *c = it->second;
+		_members.erase(it);
+		_members[newNick] = c;
+	}
+	std::map<std::string, Client *>::iterator it2 = _moderators.find(oldNick);
+	if (it2 != _moderators.end()) {
+		Client *c = it2->second;
+		_moderators.erase(it2);
+		_moderators[newNick] = c;
+	}
 }

@@ -15,21 +15,25 @@
 
 void Server::quit(Client &client, std::vector<std::string> &params)
 {
-	std::string comment;
-
-	if (params.size() >= 1)
-		comment = params[0];
-	else
-		comment = "";
+	std::string comment = params.size() >= 1 ? params[0] : "Leaving";
 
 	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
 					  "@localhost QUIT :" + comment + "\r\n";
 
 	for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
 		Channel *chan = it->second;
-		if (chan->isMember(client)) {
-			sendToChannel(*chan, msg);
-			chan->removeMember(client);
+		if (!chan->isMember(client))
+			continue;
+
+		sendToChannel(*chan, msg, client);
+		chan->removeMember(client);
+
+		if (!chan->isEmptyChannel() && !chan->hasOperator()) {
+			Client *newOp = it->second->getMembers().begin()->second;
+			chan->addModerator(*newOp);
+			std::string modeMsg =
+				":server MODE " + chan->getName() + " +o " + newOp->getNickname() + "\r\n";
+			sendToChannel(*chan, modeMsg);
 		}
 	}
 

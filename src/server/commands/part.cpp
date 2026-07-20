@@ -13,26 +13,39 @@
 #include "../../channels/Channel.hpp"
 #include "../Server.hpp"
 
-void Server::part(Client &client, std::vector<std::string> &params)
+void Server::quit(Client &client, std::vector<std::string> &params)
 {
-	if (!requireRegistered(client))
-		return;
-	if (!requireParams(client, params, 1, "PART"))
-		return;
+	std::string comment = params.size() >= 1 ? params[0] : "Leaving";
 
-	Channel *chan = requireChannel(client, params[0]);
-	if (!chan)
-		return;
-	if (!requireMember(client, chan))
-		return;
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
+					  "@localhost QUIT :" + comment + "\r\n";
 
-	std::string comment = (params.size() >= 2) ? params[1] : "";
-	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost PART " +
-					  chan->getName() + " :" + comment;
-	sendToChannel(*chan, msg);
-	chan->removeMember(client);
+	std::vector<Channel *> toDelete;
 
-	if (chan->isEmptyChannel()) {
-		deleteChannelToLst(chan);
+	for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
+		Channel *chan = it->second;
+		if (!chan->isMember(client))
+			continue;
+
+		sendToChannel(*chan, msg, client);
+		chan->removeMember(client);
+
+		if (chan->isEmptyChannel()) {
+			toDelete.push_back(chan);
+			continue;
+		}
+
+		if (!chan->hasOperator()) {
+			Client *newOp = chan->getMembers().begin()->second;
+			chan->addModerator(*newOp);
+			std::string modeMsg =
+				":server MODE " + chan->getName() + " +o " + newOp->getNickname() + "\r\n";
+			sendToChannel(*chan, modeMsg);
+		}
 	}
+
+	for (size_t i = 0; i < toDelete.size(); ++i)
+		deleteChannelToLst(toDelete[i]);
+
+	deleteClientsToLst(&client);
 }

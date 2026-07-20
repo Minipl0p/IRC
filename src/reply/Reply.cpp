@@ -27,7 +27,7 @@ void Server::sendToChannel(const Channel &chan, const std::string &str, Client &
 	std::string							   msg = str + "\r\n";
 	const std::map<std::string, Client *> &lst = chan.getMembers();
 	for (std::map<std::string, Client *>::const_iterator it = lst.begin(); it != lst.end(); it++) {
-		if (it->second == *exept)
+		if (it->second == &exept)
 			continue;
 		send(it->second->getFd(), msg.c_str(), msg.size(), 0);
 	}

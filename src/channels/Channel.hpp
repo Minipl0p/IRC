@@ -28,18 +28,20 @@ class Channel
 	const std::string &getName() const;
 
 	/* ——— Members —————————————————————————————————————————————————————————— */
-	void								   addMember(Client &client);
-	void								   removeMember(Client &client);
-	bool								   isMember(Client &client) const;
-	bool								   isEmptyChannel() const;
-	size_t								   membreCount() const;
+	void		addMember(Client &client);
+	void		removeMember(Client &client);
+	void		renameMember(const std::string &oldNick, const std::string &newNick);
+	bool		isMember(Client &client) const;
+	bool		isEmptyChannel() const;
+	size_t		membreCount() const;
+	std::string getMembersList() const;
 	const std::map<std::string, Client *> &getMembers() const;
-	std::string							   getMembersList() const;
 
 	/* ——— Opérators          ——————————————————————————————————————————————— */
 	void addModerator(Client &client);
 	void removeModerator(Client &client);
 	bool isModerator(Client &client) const;
+	bool hasOperator() const;
 
 	/* ——— Topic      ——————————————————————————————————————————————————————— */
 	const std::string &getTopic() const;

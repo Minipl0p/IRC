@@ -112,3 +112,5 @@ class Server
 	const std::map<std::string, Channel *> &getLstChannels();
 	const int							   &getServerSocket() const;
 	const sockaddr_in					   &getServerAddress() const;
+	const pollfd						   &getServerFd() const;
+};

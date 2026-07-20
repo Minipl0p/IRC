@@ -20,40 +20,44 @@ void Server::join(Client &client, std::vector<std::string> &params)
 		return;
 	if (!requireParams(client, params, 1, "JOIN"))
 		return;
+	if (params[0].empty() || params[0][0] != '#') {
+		sendReply(client, ERR_NOSUCHCHANNEL, params[0] + " :No such channel");
+		return;
+	}
 
-	Channel *chan;
+	std::string key = (params.size() > 1) ? params[1] : "";
+	Channel	   *chan;
 
 	if (findChannelToLst(params[0])) {
 		chan = requireChannel(client, params[0]);
 		if (!chan)
 			return;
+		if (chan->isInviteOnly() && !chan->isInvited(client)) {
+			sendReply(client, ERR_INVITEONLYCHAN, chan->getName() + " :Cannot join channel (+i)");
+			return;
+		}
+		if (chan->hasLimit() && chan->membreCount() >= chan->getLimit()) {
+			sendReply(client, ERR_CHANNELISFULL, chan->getName() + " :Cannot join channel (+l)");
+			return;
+		}
+		if (chan->hasKey() && !chan->keyIsValid(key)) {
+			sendReply(client, ERR_BADCHANNELKEY, chan->getName() + " :Cannot join channel (+k)");
+			return;
+		}
 	} else {
 		try {
 			chan = new Channel(params[0]);
-		} catch (const std::bad_alloc &exception) {
+		} catch (const std::bad_alloc &) {
 			return;
 		}
 		addChannelToLst(*chan);
+		chan->addMember(client);
 		chan->addModerator(client);
-	}
-
-	std::string key = (params.size() > 1) ? params[1] : "";
-
-	// Joindre un channel deja existant
-	if (chan->isInviteOnly() && !chan->isInvited(client)) {
-		sendReply(client, ERR_INVITEONLYCHAN, chan->getName() + " :Cannot join channel");
-		return;
-	}
-	if (chan->hasLimit() && chan->membreCount() >= chan->getLimit()) {
-		sendReply(client, ERR_CHANNELISFULL, chan->getName() + " :Cannot join channel");
-		return;
-	}
-	if ((key.empty() && chan->hasKey()) || !chan->keyIsValid(key)) {
-		sendReply(client, ERR_PASSWDMISMATCH, " :Password incorrect");
-		return;
+		goto end;
 	}
 
 	chan->addMember(client);
+end:
 	sendToChannel(*chan,
 				  ":" + client.getNickname() + "!" + client.getUsername() +
 					  "@localhost JOIN :" + chan->getName());
