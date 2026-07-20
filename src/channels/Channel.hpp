@@ -10,7 +10,7 @@ class Channel
 {
   private:
 	std::string						_name;
-	std::map<std::string, Client *> _membres;
+	std::map<std::string, Client *> _members;
 	std::map<std::string, Client *> _moderators;
 	std::string						_topic;
 	bool							_topicLocked;
@@ -28,12 +28,16 @@ class Channel
 	const std::string &getName() const;
 
 	/* ——— Members —————————————————————————————————————————————————————————— */
-	void								   addMembre(Client &client);
-	void								   removeMembre(Client &client);
+	void								   addMember(Client &client);
+	void								   removeMember(Client &client);
 	bool								   isMember(Client &client) const;
 	bool								   isEmptyChannel() const;
-	size_t								   membreCount() const;
-	const std::map<std::string, Client *> &getMembres() const;
+	size_t								   memberCount() const;
+	const std::map<std::string, Client *> &getMembers() const;
+	void 								   renameMember(const std::string &oldNick, const std::string &newNick);
+	std::string 						   getMembersList() const;
+
+
 
 	/* ——— Opérators          ——————————————————————————————————————————————— */
 	void addModerator(Client &client);
@@ -50,6 +54,7 @@ class Channel
 	bool			   hasKey() const;
 	const std::string &getKey() const;
 	void			   setKey(const std::string &key);
+	bool			   keyIsValid(const std::string &key);
 	void			   removeKey();
 
 	/* ——— Limit members         ——————————————————————————————————————————— */

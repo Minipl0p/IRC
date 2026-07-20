@@ -9,24 +9,24 @@ Channel::~Channel() {}
 
 const std::string &Channel::getName() const { return _name; }
 
-void Channel::addMembre(Client &client) { _membres[client.getNickname()] = &client; }
+void Channel::addMember(Client &client) { _members[client.getNickname()] = &client; }
 
-void Channel::removeMembre(Client &client)
+void Channel::removeMember(Client &client)
 {
-	_membres.erase(client.getNickname());
+	_members.erase(client.getNickname());
 	_moderators.erase(client.getNickname());
 }
 
 bool Channel::isMember(Client &client) const
 {
-	return _membres.find(client.getNickname()) != _membres.end();
+	return _members.find(client.getNickname()) != _members.end();
 }
 
-bool Channel::isEmptyChannel() const { return _membres.empty(); }
+bool Channel::isEmptyChannel() const { return _members.empty(); }
 
-size_t Channel::membreCount() const { return _membres.size(); }
+size_t Channel::memberCount() const { return _members.size(); }
 
-const std::map<std::string, Client *> &Channel::getMembres() const { return _membres; }
+const std::map<std::string, Client *> &Channel::getMembers() const { return _members; }
 
 void Channel::addModerator(Client &client) { _moderators[client.getNickname()] = &client; }
 
@@ -68,4 +68,37 @@ void Channel::addInviteMember(Client &client) { _invited[client.getNickname()] =
 bool Channel::isInvited(Client &client) const
 {
 	return _invited.find(client.getNickname()) != _invited.end();
+}
+
+bool Channel::keyIsValid(const std::string &key){
+	if (key == _key)
+		return true;
+	return false;
+}
+
+std::string Channel::getMembersList() const
+{
+    std::string list;
+    for (CliIt it = _members.begin(); it != _members.end(); ++it) {
+        if (_moderators.count(it->first))
+            list += "@";
+        list += it->first + " ";
+    }
+    return list;
+}
+
+void Channel::renameMember(const std::string &oldNick, const std::string &newNick)
+{
+    std::map<std::string, Client *>::iterator it = _members.find(oldNick);
+    if (it != _members.end()) {
+        Client *c = it->second;
+        _members.erase(it);
+        _members[newNick] = c;
+    }
+    std::map<std::string, Client *>::iterator it2 = _moderators.find(oldNick);
+    if (it2 != _moderators.end()) {
+        Client *c = it2->second;
+        _moderators.erase(it2);
+        _moderators[newNick] = c;
+    }
 }

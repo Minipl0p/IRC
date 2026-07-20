@@ -13,10 +13,11 @@ void Server::sendReply(Client &client, const std::string &code, const std::strin
 	send(client.getFd(), msg.c_str(), msg.size(), 0);
 }
 
-void Server::sendToChannel(const Channel &chan, std::string &str)
+void Server::sendToChannel(const Channel &chan, const std::string &str)
 {
-	std::map<std::string, Client *> membres = chan.getMembres();
-	for (CliIt it = membres.begin(); it != membres.end(); it++) {
-		send(it->second->getFd(), str.c_str(), str.size(), 0);
+	std::string msg = str + "\r\n";
+	std::map<std::string, Client *> members = chan.getMembers();
+	for (CliIt it = members.begin(); it != members.end(); it++) {
+		send(it->second->getFd(), msg.c_str(), msg.size(), 0);
 	}
 }

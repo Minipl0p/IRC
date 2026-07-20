@@ -47,7 +47,7 @@ Client *Server::requireClientByNick(Client &client, const std::string &nick)
 
 bool Server::requireMember(Client &client, Channel *chan)
 {
-	if (!chan->isMembre(client)) {
+	if (!chan->isMember(client)) {
 		sendReply(client, ERR_NOTONCHANNEL, chan->getName() + " :You're not on that channel");
 		return false;
 	}
@@ -65,7 +65,7 @@ bool Server::requireOperator(Client &client, Channel *chan)
 
 bool Server::requireTargetInChannel(Client &asker, Client &target, Channel *chan)
 {
-	if (!chan->isMembre(target)) {
+	if (!chan->isMember(target)) {
 		sendReply(asker,
 				  ERR_USERNOTINCHANNEL,
 				  target.getNickname() + " " + chan->getName() + " :They aren't on that channel");
@@ -76,7 +76,7 @@ bool Server::requireTargetInChannel(Client &asker, Client &target, Channel *chan
 
 bool Server::requireTargetNotInChannel(Client &asker, Client &target, Channel *chan)
 {
-	if (chan->isMembre(target)) {
+	if (chan->isMember(target)) {
 		sendReply(asker,
 				  ERR_USERONCHANNEL,
 				  target.getNickname() + " " + chan->getName() + " :is already on channel");
