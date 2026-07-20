@@ -11,21 +11,7 @@
 /* ************************************************************************** */
 
 #include "Server.hpp"
-
-void Server::addClientsToLst(Client *newClient)
-{
-	this->_listeningClientsMap[newClient->getFd()] = newClient;
-}
-
-void Server::deleteClientsToLst(Client &client, std::vector<pollfd>::iterator &it)
-{
-	close(client.getFd());
-
-	_listeningClientsMap.erase(client.getFd());
-	it = _pollfds.erase(it);
-
-	delete &client;
-}
+#include <vector>
 
 void Server::acceptNewClient()
 {
@@ -49,7 +35,7 @@ std::vector<pollfd>::iterator Server::handleClientEvent(std::vector<pollfd>::ite
 
 	std::map<fd, Client *>::iterator clientIt = _listeningClientsMap.find(fdClient);
 	if (clientIt == _listeningClientsMap.end())
-		return _pollfds.erase(it); // ne devrait jamais arriver si addClientsToLst est ok
+		return _pollfds.erase(it);
 
 	Client *client = clientIt->second;
 	int		res	   = recv(fdClient, buf, BUFFER_SIZE, 0);
@@ -64,16 +50,47 @@ std::vector<pollfd>::iterator Server::handleClientEvent(std::vector<pollfd>::ite
 	return ++it;
 }
 
-Client *Server::isClientExistOnServer(std::string nick)
+void Server::addClientsToLst(Client *src) { _listeningClientsMap[src->getFd()] = src; }
+
+bool Server::findClientsToLst(fd &src) const
 {
-	for (CliFdIt it = _listeningClientsMap.begin(); it != _listeningClientsMap.end(); ++it) {
-		if (it->second->getNickname() == nick)
-			return it->second;
-	}
-	return NULL;
+	std::map<fd, Client *>::const_iterator it = _listeningClientsMap.find(src);
+	if (it == _listeningClientsMap.end())
+		return false;
+	return true;
 }
 
-bool Server::findClientsToLst(Client &client) const
+void Server::deleteClientsToLst(Client *src)
 {
-	return _listeningClientsMap.find(client.getFd()) != _listeningClientsMap.end();
+	for (std::map<std::string, Channel *>::iterator it = _lstChannels.begin();
+		 it != _lstChannels.end();) {
+		Channel *chan = it->second;
+		++it;
+		if (chan->isMember(*src)) {
+			chan->removeMember(*src);
+			if (chan->isEmptyChannel())
+				deleteChannelToLst(chan);
+		}
+	}
+	_listeningClientsMap.erase(src->getFd());
+	deletePollfdsToLst(src->getFd());
+	delete src;
+}
+
+void Server::deleteClientsToLst(Client &src, std::vector<pollfd>::iterator &it)
+{
+	for (std::map<std::string, Channel *>::iterator cit = _lstChannels.begin();
+		 cit != _lstChannels.end();) {
+		Channel *chan = cit->second;
+		++cit;
+		if (chan->isMember(src)) {
+			chan->removeMember(src);
+			if (chan->isEmptyChannel())
+				deleteChannelToLst(chan);
+		}
+	}
+	_listeningClientsMap.erase(src.getFd());
+	it = _pollfds.erase(it);
+	close(src.getFd());
+	delete &src;
 }

@@ -13,12 +13,21 @@ void Server::sendReply(Client &client, const std::string &code, const std::strin
 	send(client.getFd(), msg.c_str(), msg.size(), 0);
 }
 
-void Server::sendToChannel(const Channel &chan, std::string &str, const std::string &exclude)
+void Server::sendToChannel(const Channel &chan, const std::string &str)
 {
-	const std::map<std::string, Client *> &membres = chan.getMembres();
-	std::string							   msg	   = str + "\r\n";
-	for (CliIt it = membres.begin(); it != membres.end(); it++) {
-		if (it->first == exclude)
+	std::string							   msg = str + "\r\n";
+	const std::map<std::string, Client *> &lst = chan.getMembers();
+	for (std::map<std::string, Client *>::const_iterator it = lst.begin(); it != lst.end(); it++) {
+		send(it->second->getFd(), msg.c_str(), msg.size(), 0);
+	}
+}
+
+void Server::sendToChannel(const Channel &chan, const std::string &str, Client &exept)
+{
+	std::string							   msg = str + "\r\n";
+	const std::map<std::string, Client *> &lst = chan.getMembers();
+	for (std::map<std::string, Client *>::const_iterator it = lst.begin(); it != lst.end(); it++) {
+		if (it->second == &exept)
 			continue;
 		send(it->second->getFd(), msg.c_str(), msg.size(), 0);
 	}

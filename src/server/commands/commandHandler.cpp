@@ -5,18 +5,18 @@
 
 void Server::initCommands()
 {
-	_commandsMap["INVITE"]	= &Server::user;
-	_commandsMap["JOIN"]	= &Server::user;
-	_commandsMap["KICK"]	= &Server::user;
-	_commandsMap["MODE"]	= &Server::user;
-	_commandsMap["NICK"]	= &Server::nick;
-	_commandsMap["PART"]	= &Server::user;
-	_commandsMap["PASS"]	= &Server::pass;
-	_commandsMap["PING"]	= &Server::user;
-	_commandsMap["PRIVMSG"] = &Server::user;
-	_commandsMap["QUIT"]	= &Server::user;
-	_commandsMap["TOPIC"]	= &Server::user;
-	_commandsMap["USER"]	= &Server::user;
+	_commandsMap["INVITE"] = &Server::invite;
+	_commandsMap["JOIN"]   = &Server::join;
+	_commandsMap["KICK"]   = &Server::kick;
+	_commandsMap["MODE"]   = &Server::mode;
+	_commandsMap["NICK"]   = &Server::nick;
+	_commandsMap["PART"]   = &Server::part;
+	_commandsMap["PASS"]   = &Server::pass;
+	// _commandsMap["PING"]	= &Server::ping;
+	_commandsMap["PRIVMSG"] = &Server::privmsg;
+	_commandsMap["QUIT"]	= &Server::quit;
+	// _commandsMap["TOPIC"]	= &Server::topic;
+	_commandsMap["USER"] = &Server::user;
 }
 
 void Server::executeCmd(Client &client, Message &msg)

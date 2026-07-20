@@ -6,7 +6,7 @@
 /*   By: rcompain <rcompain@student.42angouleme.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/03 12:00:27 by rcompain          #+#    #+#             */
-/*   Updated: 2026/07/09 09:13:12 by rcompain         ###   ########.fr       */
+/*   Updated: 2026/07/18 17:41:41 by rcompain         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,10 @@ Server::~Server()
 std::vector<pollfd>					 &Server::getLstFds() { return _pollfds; }
 const std::map<std::string, Command> &Server::getCommandsMap() { return _commandsMap; }
 std::map<fd, Client *> &Server::getListeningClientsMap() { return _listeningClientsMap; }
-const int			   &Server::getServerSocket() const { return _serverSocket; }
-const sockaddr_in	   &Server::getServerAddress() const { return _serverAddress; }
-const pollfd		   &Server::getServerFd() const { return _pollfds[0]; }
+const std::map<std::string, Channel *> &Server::getLstChannels() { return _lstChannels; }
+const int							   &Server::getServerSocket() const { return _serverSocket; }
+const sockaddr_in					   &Server::getServerAddress() const { return _serverAddress; }
+const pollfd						   &Server::getServerFd() const { return _pollfds[0]; }
 
 /* ——— Functions         ———————————————————————————————————————————————————— */
 void Server::initServ(int port, std::string password)
@@ -96,4 +97,34 @@ void Server::handleClientData(Client &client)
 		Message msg = tokenizeLine(line);
 		executeCmd(client, msg);
 	}
+}
+
+/* ——— Channel management ——————————————————————————————————————————————— */
+void Server::addChannelToLst(Channel &src) { _lstChannels[src.getName()] = &src; }
+
+bool Server::findChannelToLst(std::string &name) const
+{
+	std::map<std::string, Channel *>::const_iterator it = _lstChannels.find(name);
+	if (it == _lstChannels.end())
+		return false;
+	return true;
+}
+void Server::deleteChannelToLst(Channel *src)
+{
+	_lstChannels.erase(src->getName());
+	delete src;
+}
+
+/* ——— FdLst management ————————————————————————————————————————————————— */
+void Server::deletePollfdsToLst(const fd &srcFd)
+{
+	std::vector<pollfd>::iterator pos = _pollfds.begin();
+	for (; pos != _pollfds.end(); ++pos) {
+		if (pos->fd == srcFd)
+			break;
+	}
+	if (pos != _pollfds.end())
+		_pollfds.erase(pos);
+
+	close(srcFd);
 }

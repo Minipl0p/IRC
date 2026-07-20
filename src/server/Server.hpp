@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
@@ -12,7 +13,6 @@
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <vector>
 
 #include "../channels/Channel.hpp"
 #include "../clients/Client.hpp"
@@ -75,9 +75,10 @@ class Server
 
 	/* ——— Channel management ——————————————————————————————————————————————— */
 	void addChannelToLst(Channel &);
-	bool findChannelToLst(Channel &) const;
-	void deleteChannelToLst(Channel &);
-	void sendToChannel(const Channel &, std::string &, const std::string &);
+	bool findChannelToLst(std::string &name) const;
+	void deleteChannelToLst(Channel *);
+	void sendToChannel(const Channel &, const std::string &);
+	void sendToChannel(const Channel &chan, const std::string &str, Client &client);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
@@ -90,23 +91,28 @@ class Server
 	/* ——— Main entry point ————————————————————————————————————————————————— */
 	void handleClientData(Client &);
 
+	/* ——— FdLst management ————————————————————————————————————————————————— */
+	void deletePollfdsToLst(const fd &);
+
 	/* ——— Life loop server ————————————————————————————————————————————————— */
 	void						  acceptNewClient();
 	std::vector<pollfd>::iterator handleClientEvent(std::vector<pollfd>::iterator it);
 
 	/* ——— Client management ———————————————————————————————————————————————— */
 	void	addClientsToLst(Client *);
-	bool	findClientsToLst(Client &) const;
+	bool	findClientsToLst(fd &) const;
 	void	deleteClientsToLst(Client &, std::vector<pollfd>::iterator &);
+	void	deleteClientsToLst(Client *client);
 	Client *isClientExistOnServer(std::string);
 
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
-	std::vector<pollfd>					 &getLstFds();
-	const std::map<std::string, Command> &getCommandsMap();
-	std::map<fd, Client *>				 &getListeningClientsMap();
-	const int							 &getServerSocket() const;
-	const sockaddr_in					 &getServerAddress() const;
-	const pollfd						 &getServerFd() const;
+	std::vector<pollfd>					   &getLstFds();
+	const std::map<std::string, Command>   &getCommandsMap();
+	std::map<fd, Client *>				   &getListeningClientsMap();
+	const std::map<std::string, Channel *> &getLstChannels();
+	const int							   &getServerSocket() const;
+	const sockaddr_in					   &getServerAddress() const;
+	const pollfd						   &getServerFd() const;
 };
 
 typedef std::map<fd, Client *>::iterator CliFdIt;
