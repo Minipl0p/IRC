@@ -27,5 +27,10 @@ void Server::invite(Client &client, std::vector<std::string> &params)
 	if (!requireTargetNotInChannel(client, *target, chan))
 		return;
 
-	chan->addInviteMember(client);
+	chan->addInviteMember(*target);
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
+					  "@localhost INVITE " + target->getNickname() + " :" + chan->getName() +
+					  "\r\n";
+	send(target->getFd(), msg.c_str(), msg.size(), 0);
+	sendReply(client, RPL_INVITING, target->getNickname() + " " + chan->getName());
 }

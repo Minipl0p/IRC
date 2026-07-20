@@ -130,7 +130,8 @@ void Server::mode(Client &client, std::vector<std::string> &params)
 	if (appliedModes.empty() || appliedModes == "+" || appliedModes == "-")
 		return;
 
-	std::string msg = ":" + client.getNickname() + " MODE " + chan->getName() + " " + appliedModes;
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost MODE " +
+					  chan->getName() + " " + appliedModes;
 	for (size_t i = 0; i < appliedArgs.size(); ++i)
 		msg += " " + appliedArgs[i];
 

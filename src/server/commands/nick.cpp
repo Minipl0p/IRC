@@ -58,7 +58,13 @@ void Server::nick(Client &client, std::vector<std::string> &params)
 		}
 	}
 
+	std::string oldNick = client.getNickname();
 	client.setNickname(newNick);
+	if (!oldNick.empty()) {
+		std::string msg =
+			":" + oldNick + "!" + client.getUsername() + "@localhost NICK :" + newNick + "\r\n";
+		send(client.getFd(), msg.c_str(), msg.size(), 0);
+	}
 
 	tryRegister(client);
 }

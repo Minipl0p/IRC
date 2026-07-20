@@ -78,6 +78,7 @@ class Server
 	bool findChannelToLst(std::string &name) const;
 	void deleteChannelToLst(Channel *);
 	void sendToChannel(const Channel &, const std::string &);
+	void sendToChannel(const Channel &chan, const std::string &str, Client &client);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
@@ -111,5 +112,3 @@ class Server
 	const std::map<std::string, Channel *> &getLstChannels();
 	const int							   &getServerSocket() const;
 	const sockaddr_in					   &getServerAddress() const;
-	const pollfd						   &getServerFd() const;
-};

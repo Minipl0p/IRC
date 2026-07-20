@@ -22,9 +22,8 @@ void Server::kick(Client &client, std::vector<std::string> &params)
 		return;
 
 	std::string comment = (params.size() >= 3) ? params[2] : client.getNickname();
-
-	std::string msg =
-		":" + client.getNickname() + " KICK " + chan->getName() + " " + params[1] + " :" + comment;
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost KICK " +
+					  chan->getName() + " " + params[1] + " :" + comment + "\r\n";
 	sendToChannel(*chan, msg);
 
 	chan->removeMember(*target);

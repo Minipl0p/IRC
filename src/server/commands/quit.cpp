@@ -22,7 +22,8 @@ void Server::quit(Client &client, std::vector<std::string> &params)
 	else
 		comment = "";
 
-	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + " QUIT :" + comment;
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
+					  "@localhost QUIT :" + comment + "\r\n";
 
 	for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
 		Channel *chan = it->second;
