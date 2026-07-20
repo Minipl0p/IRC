@@ -20,22 +20,18 @@ void Server::part(Client &client, std::vector<std::string> &params)
 	if (!requireParams(client, params, 1, "PART"))
 		return;
 
-	
 	Channel *chan = requireChannel(client, params[0]);
 	if (!chan)
 		return;
 	if (!requireMember(client, chan))
 		return;
 
-
 	std::string comment = (params.size() >= 2) ? params[1] : "";
-	std::string msg =
-		":" + client.getNickname() + " PART " + chan->getName() + " :" + comment;
+	std::string msg		= ":" + client.getNickname() + " PART " + chan->getName() + " :" + comment;
 	sendToChannel(*chan, msg);
-	chan->removeMembre(client);
+	chan->removeMember(client);
 
-
-	if (chan->isEmptyChannel()){
+	if (chan->isEmptyChannel()) {
 		deleteChannelToLst(chan);
 	}
 }

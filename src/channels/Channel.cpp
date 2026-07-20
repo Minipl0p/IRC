@@ -9,24 +9,24 @@ Channel::~Channel() {}
 
 const std::string &Channel::getName() const { return _name; }
 
-void Channel::addMembre(Client &client) { _membres[client.getNickname()] = &client; }
+void Channel::addMember(Client &client) { _members[client.getNickname()] = &client; }
 
-void Channel::removeMembre(Client &client)
+void Channel::removeMember(Client &client)
 {
-	_membres.erase(client.getNickname());
+	_members.erase(client.getNickname());
 	_moderators.erase(client.getNickname());
 }
 
 bool Channel::isMember(Client &client) const
 {
-	return _membres.find(client.getNickname()) != _membres.end();
+	return _members.find(client.getNickname()) != _members.end();
 }
 
-bool Channel::isEmptyChannel() const { return _membres.empty(); }
+bool Channel::isEmptyChannel() const { return _members.empty(); }
 
-size_t Channel::membreCount() const { return _membres.size(); }
+size_t Channel::membreCount() const { return _members.size(); }
 
-const std::map<std::string, Client *> &Channel::getMembres() const { return _membres; }
+const std::map<std::string, Client *> &Channel::getMembers() const { return _members; }
 
 void Channel::addModerator(Client &client) { _moderators[client.getNickname()] = &client; }
 
@@ -70,7 +70,8 @@ bool Channel::isInvited(Client &client) const
 	return _invited.find(client.getNickname()) != _invited.end();
 }
 
-bool Channel::keyIsValid(const std::string &key){
+bool Channel::keyIsValid(const std::string &key)
+{
 	if (key == _key)
 		return true;
 	return false;

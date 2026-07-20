@@ -13,11 +13,24 @@
 #include "../../channels/Channel.hpp"
 #include "../Server.hpp"
 
+void Server::quit(Client &client, std::vector<std::string> &params)
+{
+	std::string comment;
 
+	if (params.size() >= 1)
+		comment = params[0];
+	else
+		comment = "";
 
-void Server::quit(Client &client, std::vector<std::string> &params){
-	
-	std::string comment = (params.size() == 1) ? params[0] : "";
-	std::string msg = ":" + client.getNickname() + " QUIT " + ":" + comment;
-	deleteClientsToLst(&client, msg);
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + " QUIT :" + comment;
+
+	for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
+		Channel *chan = it->second;
+		if (chan->isMember(client)) {
+			sendToChannel(*chan, msg);
+			chan->removeMember(client);
+		}
+	}
+
+	deleteClientsToLst(&client);
 }

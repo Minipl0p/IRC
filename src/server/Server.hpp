@@ -1,6 +1,7 @@
 
 #pragma once
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <errno.h>
@@ -12,8 +13,6 @@
 #include <string>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <errno.h>
-#include <algorithm>
 
 #include "../channels/Channel.hpp"
 #include "../clients/Client.hpp"
@@ -75,13 +74,13 @@ class Server
 	bool	 requireTextToSend(Client &client, const std::string &text);
 
 	/* ——— Channel management ——————————————————————————————————————————————— */
-	void 	addChannelToLst(Channel &);
-	bool 	findChannelToLst(std::string &name) const;
-	void 	deleteChannelToLst(Channel *);
-	void 	sendToChannel(const Channel &, const std::string &);
+	void addChannelToLst(Channel &);
+	bool findChannelToLst(std::string &name) const;
+	void deleteChannelToLst(Channel *);
+	void sendToChannel(const Channel &, const std::string &);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
-	void 	sendReply(Client &client, const std::string &code, const std::string &params);
+	void sendReply(Client &client, const std::string &code, const std::string &params);
 
   public:
 	/* ——— Constructor & Destructor ————————————————————————————————————————— */
@@ -89,27 +88,28 @@ class Server
 	~Server();
 
 	/* ——— Main entry point ————————————————————————————————————————————————— */
-	void 	handleClientData(Client &);
+	void handleClientData(Client &);
 
 	/* ——— FdLst management ————————————————————————————————————————————————— */
-	void 	deletePollfdsToLst(const fd &);
+	void deletePollfdsToLst(const fd &);
 
 	/* ——— Life loop server ————————————————————————————————————————————————— */
 	void						  acceptNewClient();
 	std::vector<pollfd>::iterator handleClientEvent(std::vector<pollfd>::iterator it);
 
 	/* ——— Client management ———————————————————————————————————————————————— */
-	void	addClientsToLst(Client &);
+	void	addClientsToLst(Client *);
 	bool	findClientsToLst(fd &) const;
-	void	deleteClientsToLst(Client *, std::string &);
+	void	deleteClientsToLst(Client &, std::vector<pollfd>::iterator &);
+	void	deleteClientsToLst(Client *client);
 	Client *isClientExistOnServer(std::string);
 
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
-	std::vector<pollfd>					 	&getLstFds();
-	const std::map<std::string, Command> 	&getCommandsMap();
-	std::map<fd, Client *>				 	&getListeningClientsMap();
-	const std::map<std::string, Channel *>	&getLstChannels();
-	const int							 	&getServerSocket() const;
-	const sockaddr_in					 	&getServerAddress() const;
-	const pollfd						 	&getServerFd() const;
+	std::vector<pollfd>					   &getLstFds();
+	const std::map<std::string, Command>   &getCommandsMap();
+	std::map<fd, Client *>				   &getListeningClientsMap();
+	const std::map<std::string, Channel *> &getLstChannels();
+	const int							   &getServerSocket() const;
+	const sockaddr_in					   &getServerAddress() const;
+	const pollfd						   &getServerFd() const;
 };
