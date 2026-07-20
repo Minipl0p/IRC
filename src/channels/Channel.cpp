@@ -76,3 +76,14 @@ bool Channel::keyIsValid(const std::string &key)
 		return true;
 	return false;
 }
+
+std::string Channel::getMembersList() const
+{
+	std::string list;
+	for (CliIt it = _members.begin(); it != _members.end(); ++it) {
+		if (_moderators.count(it->first))
+			list += "@";
+		list += it->first + " ";
+	}
+	return list;
+}

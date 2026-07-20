@@ -27,16 +27,14 @@ void Server::join(Client &client, std::vector<std::string> &params)
 		chan = requireChannel(client, params[0]);
 		if (!chan)
 			return;
-	} else { // Creation d'un channel
+	} else {
 		try {
 			chan = new Channel(params[0]);
 		} catch (const std::bad_alloc &exception) {
 			return;
 		}
 		addChannelToLst(*chan);
-		chan->addMember(client);
 		chan->addModerator(client);
-		return;
 	}
 
 	std::string key = (params.size() > 1) ? params[1] : "";
@@ -56,5 +54,10 @@ void Server::join(Client &client, std::vector<std::string> &params)
 	}
 
 	chan->addMember(client);
-	sendToChannel(*chan, client.getNickname() + " has join this channel");
+	sendToChannel(*chan,
+				  ":" + client.getNickname() + "!" + client.getUsername() +
+					  "@localhost JOIN :" + chan->getName());
+	sendReply(client, RPL_TOPIC, chan->getName() + " :" + chan->getTopic());
+	sendReply(client, RPL_NAMREPLY, "= " + chan->getName() + " :" + chan->getMembersList());
+	sendReply(client, RPL_ENDOFNAMES, chan->getName() + " :End of /NAMES list");
 }

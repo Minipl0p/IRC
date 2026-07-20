@@ -27,7 +27,8 @@ void Server::part(Client &client, std::vector<std::string> &params)
 		return;
 
 	std::string comment = (params.size() >= 2) ? params[1] : "";
-	std::string msg		= ":" + client.getNickname() + " PART " + chan->getName() + " :" + comment;
+	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost PART " +
+					  chan->getName() + " :" + comment;
 	sendToChannel(*chan, msg);
 	chan->removeMember(client);
 

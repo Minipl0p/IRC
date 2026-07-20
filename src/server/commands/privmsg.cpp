@@ -37,7 +37,8 @@ void Server::privmsg(Client &client, std::vector<std::string> &params)
 				continue;
 			if (!requireMember(client, chan))
 				continue;
-			std::string msg = client.getNickname() + " :" + text;
+			std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
+							  "@localhost PRIVMSG " + chan->getName() + " :" + text;
 			sendToChannel(*chan, msg);
 
 		} else {
