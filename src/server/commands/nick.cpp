@@ -33,46 +33,50 @@ static bool isValidNickname(const std::string &nick)
 
 void Server::nick(Client &client, std::vector<std::string> &params)
 {
-    if (!client.isPassOk()) {
-        sendReply(client, ERR_PASSWDMISMATCH, ":Password required");
-        return;
-    }
+	if (!client.isPassOk()) {
+		sendReply(client, ERR_PASSWDMISMATCH, ":Password required");
+		return;
+	}
 
-    if (params.empty()) {
-        sendReply(client, ERR_NONICKNAMEGIVEN, ":No nickname given");
-        return;
-    }
+	if (params.empty()) {
+		sendReply(client, ERR_NONICKNAMEGIVEN, ":No nickname given");
+		return;
+	}
 
-    std::string newNick = params[0];
+	std::string newNick = params[0];
 
-    if (!isValidNickname(newNick)) {
-        sendReply(client, ERR_ERRONEUSNICKNAME, newNick + " :Erroneous nickname");
-        return;
-    }
+	if (!isValidNickname(newNick)) {
+		sendReply(client, ERR_ERRONEUSNICKNAME, newNick + " :Erroneous nickname");
+		return;
+	}
 
-    std::map<int, Client *>::iterator it;
-    for (it = _listeningClientsMap.begin(); it != _listeningClientsMap.end(); ++it) {
-        if (toLower(it->second->getNickname()) == toLower(newNick)) {
-            sendReply(client, ERR_NICKNAMEINUSE, newNick + " :Nickname is already in use");
-            return;
-        }
-    }
+	std::map<int, Client *>::iterator it;
+	for (it = _listeningClientsMap.begin(); it != _listeningClientsMap.end(); ++it) {
+		if (toLower(it->second->getNickname()) == toLower(newNick)) {
+			sendReply(client, ERR_NICKNAMEINUSE, newNick + " :Nickname is already in use");
+			return;
+		}
+	}
 
-    std::string oldNick = client.getNickname();
+	std::string oldNick = client.getNickname();
 
-    for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it)
-        it->second->renameMember(oldNick, newNick);
+	for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it)
+		it->second->renameMember(oldNick, newNick);
 
-    client.setNickname(newNick);
+	client.setNickname(newNick);
 
-    if (!oldNick.empty()) {
-        std::string msg =
-            ":" + oldNick + "!" + client.getUsername() + "@localhost NICK :" + newNick + "\r\n";
-        for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
-            if (it->second->isMember(client))
-                sendToChannel(*it->second, msg);
-        }
-    }
+	std::string selfMsg =
+		":" + oldNick + "!" + client.getUsername() + "@localhost NICK :" + newNick + "\r\n";
+	send(client.getFd(), selfMsg.c_str(), selfMsg.size(), 0);
 
-    tryRegister(client);
+	if (!oldNick.empty()) {
+		std::string msg =
+			":" + oldNick + "!" + client.getUsername() + "@localhost NICK :" + newNick + "\r\n";
+		for (ChanIt it = _lstChannels.begin(); it != _lstChannels.end(); ++it) {
+			if (it->second->isMember(client))
+				sendToChannel(*it->second, msg);
+		}
+	}
+
+	tryRegister(client);
 }
