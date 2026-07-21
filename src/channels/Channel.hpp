@@ -34,10 +34,8 @@ class Channel
 	bool								   isEmptyChannel() const;
 	size_t								   memberCount() const;
 	const std::map<std::string, Client *> &getMembers() const;
-	void 								   renameMember(const std::string &oldNick, const std::string &newNick);
-	std::string 						   getMembersList() const;
-
-
+	void		renameMember(const std::string &oldNick, const std::string &newNick);
+	std::string getMembersList() const;
 
 	/* ——— Opérators          ——————————————————————————————————————————————— */
 	void addModerator(Client &client);
