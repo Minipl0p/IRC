@@ -82,6 +82,7 @@ void Server::mode(Client &client, std::vector<std::string> &params)
 			} else {
 				chan->removeKey();
 				appliedModes += 'k';
+				appliedArgs.push_back("*");
 			}
 		} else if (m == 'l') {
 			if (adding) {
