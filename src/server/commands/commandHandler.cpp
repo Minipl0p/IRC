@@ -12,10 +12,10 @@ void Server::initCommands()
 	_commandsMap["NICK"]	= &Server::nick;
 	_commandsMap["PART"]	= &Server::part;
 	_commandsMap["PASS"]	= &Server::pass;
-	// _commandsMap["PING"]	= &Server::ping;
+	_commandsMap["PING"]	= &Server::ping;
 	_commandsMap["PRIVMSG"] = &Server::privmsg;
 	_commandsMap["QUIT"]	= &Server::quit;
-	// _commandsMap["TOPIC"]	= &Server::topic;
+	_commandsMap["TOPIC"]	= &Server::topic;
 	_commandsMap["USER"]	= &Server::user;
 }
 
