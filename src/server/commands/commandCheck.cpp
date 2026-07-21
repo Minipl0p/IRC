@@ -103,8 +103,13 @@ bool Server::requireTextToSend(Client &client, const std::string &text)
 	return true;
 }
 
-Client *Server::isClientExistOnServer(std::string str)
+Client *Server::isClientExistOnServer(const std::string &nick)
 {
-	(void)str;
+	for (std::map<fd, Client *>::iterator it = _listeningClientsMap.begin();
+		 it != _listeningClientsMap.end();
+		 ++it) {
+		if (it->second->getNickname() == nick)
+			return it->second;
+	}
 	return NULL;
 }

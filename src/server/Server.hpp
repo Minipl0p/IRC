@@ -105,7 +105,7 @@ class Server
 	void	addClientsToLst(Client &);
 	bool	findClientsToLst(fd &) const;
 	void	deleteClientsToLst(Client *, std::string &);
-	Client *isClientExistOnServer(std::string);
+	Client *isClientExistOnServer(const std::string &);
 
 	/* ——— Getters & Setters ———————————————————————————————————————————————— */
 	std::vector<pollfd>					   &getLstFds();
