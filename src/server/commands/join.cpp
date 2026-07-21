@@ -30,6 +30,8 @@ void Server::join(Client &client, std::vector<std::string> &params)
 
 	if (findChannelToLst(params[0])) {
 		chan = requireChannel(client, params[0]);
+		if (chan->isMember(client))
+			return;
 		if (!chan)
 			return;
 		if (chan->isInviteOnly() && !chan->isInvited(client)) {
