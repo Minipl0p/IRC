@@ -15,7 +15,7 @@ void Server::initCommands()
 	// _commandsMap["PING"]	= &Server::ping;
 	_commandsMap["PRIVMSG"] = &Server::privmsg;
 	_commandsMap["QUIT"]	= &Server::quit;
-	// _commandsMap["TOPIC"]	= &Server::topic;
+	_commandsMap["TOPIC"]	= &Server::topic;
 	_commandsMap["USER"]	= &Server::user;
 }
 
