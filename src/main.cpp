@@ -21,6 +21,19 @@ int main(int ac, char **av)
 		return -1;
 	}
 
+	for (int i = 0; av[1][i]; i++) {
+		if (!std::isdigit(av[1][i])) {
+			std::cerr << "Error: port must be a number" << std::endl;
+			return 1;
+		}
+	}
+
+	int port = std::atoi(av[1]);
+	if (port < 1024 || port > 65535) {
+		std::cerr << "Error: port must be between 1024 and 65535" << std::endl;
+		return 1;
+	}
+
 	std::string password(av[2]);
 	Server		server(std::atoi(av[1]), password);
 	int			timeout = (3 * 60 * 1000);

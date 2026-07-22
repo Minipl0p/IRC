@@ -60,9 +60,10 @@ void Server::joinChannel(Client &client, const std::string &chanName, const std:
 		sendReply(client, RPL_NOTOPIC, chan->getName() + " :No topic is set");
 	else {
 		sendReply(client, RPL_TOPIC, chan->getName() + " :" + chan->getTopic());
+		std::string setter = chan->getTopicSetter().empty() ? "unknown" : chan->getTopicSetter();
 		sendReply(client,
 				  RPL_TOPICWHOTIME,
-				  chan->getName() + " " + chan->getTopicSetter() + " " + chan->getTopicTimestamp());
+				  chan->getName() + " " + setter + " " + chan->getTopicTimestamp());
 	}
 	sendReply(client, RPL_NAMREPLY, "= " + chan->getName() + " :" + chan->getMembersList());
 	sendReply(client, RPL_ENDOFNAMES, chan->getName() + " :End of /NAMES list");
