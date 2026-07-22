@@ -2,7 +2,8 @@
 #include "Channel.hpp"
 
 Channel::Channel(const std::string &name)
-	: _name(name), _topic(""), _topicLocked(false), _key(""), _userLimit(0), _inviteOnly(false)
+	: _name(name), _topic(""), _topicLocked(false), _topicSetter(""), _topicTimestamp("0"),
+	  _key(""), _userLimit(0), _inviteOnly(false)
 {}
 
 Channel::~Channel() {}
@@ -40,6 +41,14 @@ bool Channel::isModerator(Client &client) const
 const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &topic) { _topic = topic; }
+
+std::string Channel::getTopicTimestamp() const { return _topicTimestamp; }
+
+std::string Channel::getTopicSetter() const { return _topicTimestamp; }
+
+void Channel::setTopicSetter(const std::string &setter) { _topicSetter = setter; }
+
+void Channel::setTopicTimestamp(const std::string &timestamp) { _topicTimestamp = timestamp; }
 
 bool Channel::isTopicLocked() const { return _topicLocked; }
 

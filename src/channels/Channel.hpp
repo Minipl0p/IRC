@@ -1,8 +1,9 @@
 
 #pragma once
 
+#include <ctime>
 #include <map>
-#include <string>
+#include <sstream>
 
 #include "../clients/Client.hpp"
 
@@ -14,6 +15,8 @@ class Channel
 	std::map<std::string, Client *> _moderators;
 	std::string						_topic;
 	bool							_topicLocked;
+	std::string						_topicSetter;
+	std::string						_topicTimestamp;
 	std::string						_key;
 	size_t							_userLimit;
 	bool							_inviteOnly;
@@ -47,6 +50,10 @@ class Channel
 	void			   setTopic(const std::string &topic);
 	bool			   isTopicLocked() const;
 	void			   setTopicLocked(bool locked);
+	void			   setTopicSetter(const std::string &setter);
+	void			   setTopicTimestamp(const std::string &timestamp);
+	std::string		   getTopicSetter() const;
+	std::string		   getTopicTimestamp() const;
 
 	/* ——— password               —————————————————————————————————————————— */
 	bool			   hasKey() const;

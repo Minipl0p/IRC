@@ -27,21 +27,28 @@ void Server::topic(Client &client, std::vector<std::string> &params)
 	if (!requireMember(client, chan))
 		return;
 
-	
-	if (params.size() == 1){ // cas ou juste consultation du topic
+	if (params.size() == 1) {
 		if (chan->getTopic().empty())
 			sendReply(client, RPL_NOTOPIC, chan->getName() + " :No topic is set");
-		else{
+		else {
 			sendReply(client, RPL_TOPIC, chan->getName() + " :" + chan->getTopic());
+			sendReply(client,
+					  RPL_TOPICWHOTIME,
+					  chan->getName() + " " + chan->getTopicSetter() + " " +
+						  chan->getTopicTimestamp());
 		}
-	}
-	else{ // cas ou modification du topic
+	} else {
 		if (chan->isTopicLocked() && !requireOperator(client, chan))
 			return;
-		chan->setTopic(params[1]);
 
-		std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost TOPIC " +
-					  chan->getName() + " :" + params[1] + "\r\n";
+		chan->setTopic(params[1]);
+		chan->setTopicSetter(client.getNickname());
+		std::ostringstream oss;
+		oss << std::time(NULL);
+		chan->setTopicTimestamp(oss.str());
+
+		std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
+						  "@localhost TOPIC " + chan->getName() + " :" + params[1] + "\r\n";
 		sendToChannel(*chan, msg);
 	}
 }
