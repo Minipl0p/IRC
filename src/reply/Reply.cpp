@@ -15,9 +15,20 @@ void Server::sendReply(Client &client, const std::string &code, const std::strin
 
 void Server::sendToChannel(const Channel &chan, const std::string &str)
 {
-	std::string msg = str + "\r\n";
+	std::string						msg		= str + "\r\n";
 	std::map<std::string, Client *> members = chan.getMembers();
 	for (CliIt it = members.begin(); it != members.end(); it++) {
+		send(it->second->getFd(), msg.c_str(), msg.size(), 0);
+	}
+}
+
+void Server::sendToChannel(const Channel &chan, const std::string &str, const Client &exclude)
+{
+	std::string						msg		= str + "\r\n";
+	std::map<std::string, Client *> members = chan.getMembers();
+	for (CliIt it = members.begin(); it != members.end(); it++) {
+		if (it->second == &exclude)
+			continue;
 		send(it->second->getFd(), msg.c_str(), msg.size(), 0);
 	}
 }

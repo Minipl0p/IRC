@@ -79,6 +79,7 @@ class Server
 	bool findChannelToLst(const std::string &name) const;
 	void deleteChannelToLst(Channel *);
 	void sendToChannel(const Channel &, const std::string &);
+	void sendToChannel(const Channel &, const std::string &, const Client &);
 	void joinChannel(Client &client, const std::string &chanName, const std::string &key);
 	void partChannel(Client &client, const std::string &chanName, const std::string &comment);
 
@@ -101,9 +102,6 @@ class Server
 	std::vector<pollfd>::iterator handleClientEvent(std::vector<pollfd>::iterator it);
 
 	/* ——— Client management ———————————————————————————————————————————————— */
-	// void	addClientsToLst(Client *);
-	// bool	findClientsToLst(Client &) const;
-	// void	deleteClientsToLst(Client &, std::vector<pollfd>::iterator &);
 	void	addClientsToLst(Client &);
 	bool	findClientsToLst(fd &) const;
 	void	deleteClientsToLst(Client *, std::string &);

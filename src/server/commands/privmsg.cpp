@@ -27,7 +27,7 @@ void Server::privmsg(Client &client, std::vector<std::string> &params)
 				continue;
 			std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
 							  "@localhost PRIVMSG " + chan->getName() + " :" + text;
-			sendToChannel(*chan, msg);
+			sendToChannel(*chan, msg, client);
 
 		} else {
 			std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +

@@ -32,7 +32,7 @@ SRC_CLIENTS	= Client.cpp
 
 SRC_CHANNELS = Channel.cpp
 
-SRC_COMMANDS = commandCheck.cpp commandHandler.cpp invite.cpp join.cpp kick.cpp mode.cpp nick.cpp part.cpp pass.cpp privmsg.cpp quit.cpp user.cpp
+SRC_COMMANDS = commandCheck.cpp commandHandler.cpp invite.cpp join.cpp ping.cpp topic.cpp kick.cpp mode.cpp nick.cpp part.cpp pass.cpp privmsg.cpp quit.cpp user.cpp
 
 SRC_REPLY	 = Reply.cpp
 
