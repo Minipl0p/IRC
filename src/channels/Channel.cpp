@@ -44,7 +44,7 @@ void Channel::setTopic(const std::string &topic) { _topic = topic; }
 
 std::string Channel::getTopicTimestamp() const { return _topicTimestamp; }
 
-std::string Channel::getTopicSetter() const { return _topicTimestamp; }
+std::string Channel::getTopicSetter() const { return _topicSetter; }
 
 void Channel::setTopicSetter(const std::string &setter) { _topicSetter = setter; }
 
