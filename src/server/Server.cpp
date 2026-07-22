@@ -137,6 +137,7 @@ bool Server::findClientsToLst(fd &src) const
 		return false;
 	return true;
 }
+
 void Server::deleteClientsToLst(Client *src, std::string &msg)
 {
 	// enlever le client de chanque channel ou il est present

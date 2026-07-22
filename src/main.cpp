@@ -55,15 +55,33 @@ int main(int ac, char **av)
 			char	buff[4096];
 			int		n = recv(fdClient.fd, buff, sizeof(buff), 0);
 			if (n <= 0) { // deconnexion du client
-				std::string empty;
-				server.deleteClientsToLst(client, empty);
+				std::string quitMsg = ":" + client->getNickname() + "!" + client->getUsername() +
+									  "@localhost QUIT :Connection closed\r\n";
+				server.deleteClientsToLst(client, quitMsg);
+				--i;
 				continue;
 			}
 			client->getReadBuffer().append(buff, n);
 			server.handleClientData(*client);
 		}
-	}
 
+		// for (size_t i = server.getLstFds().size() - 1; i >= 1; i--) {
+		// 	pollfd &fdClient = server.getLstFds()[i];
+		// 	if (!(fdClient.revents & POLLIN))
+		// 		continue;
+		// 	Client *client = server.getListeningClientsMap()[fdClient.fd];
+		// 	char	buff[4096];
+		// 	int		n = recv(fdClient.fd, buff, sizeof(buff), 0);
+		// 	if (n <= 0) {
+		// 		std::string quitMsg = ":" + client->getNickname() + "!" + client->getUsername() +
+		// 							  "@localhost QUIT :Connection closed\r\n";
+		// 		server.deleteClientsToLst(client, quitMsg);
+		// 		continue;
+		// 	}
+		// 	client->getReadBuffer().append(buff, n);
+		// 	server.handleClientData(*client);
+		// }
+	}
 	close(server.getServerSocket());
 
 	return 0;
