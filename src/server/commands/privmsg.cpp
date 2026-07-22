@@ -31,7 +31,7 @@ void Server::privmsg(Client &client, std::vector<std::string> &params)
 
 		} else {
 			std::string msg = ":" + client.getNickname() + "!" + client.getUsername() +
-							  "@localhost PRIVMSG " + targetName + " :" + text + "/r/n";
+							  "@localhost PRIVMSG " + targetName + " :" + text + "\r\n";
 			Client	   *dst = requireClientByNick(client, targetName);
 			if (!dst)
 				continue;
