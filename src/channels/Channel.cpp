@@ -29,6 +29,8 @@ size_t Channel::memberCount() const { return _members.size(); }
 
 const std::map<std::string, Client *> &Channel::getMembers() const { return _members; }
 
+const std::map<std::string, Client *> &Channel::getModerators() const { return _moderators; }
+
 void Channel::addModerator(Client &client) { _moderators[client.getNickname()] = &client; }
 
 void Channel::removeModerator(Client &client) { _moderators.erase(client.getNickname()); }
@@ -110,5 +112,15 @@ void Channel::renameMember(const std::string &oldNick, const std::string &newNic
 		Client *c = it2->second;
 		_moderators.erase(it2);
 		_moderators[newNick] = c;
+	}
+}
+
+void Channel::removeInvite(Client &client) { _invited.erase(client.getNickname()); }
+
+void Channel::promoteNextModerator()
+{
+	if (_moderators.empty() && !_members.empty()) {
+		Client *newOp					  = _members.begin()->second;
+		_moderators[newOp->getNickname()] = newOp;
 	}
 }

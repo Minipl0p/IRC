@@ -42,6 +42,8 @@ void Server::joinChannel(Client &client, const std::string &chanName, const std:
 			return;
 		}
 		chan->addMember(client);
+		chan->removeInvite(client);
+
 	} else {
 		try {
 			chan = new Channel(chanName);
@@ -50,6 +52,7 @@ void Server::joinChannel(Client &client, const std::string &chanName, const std:
 		}
 		addChannelToLst(*chan);
 		chan->addMember(client);
+		chan->removeInvite(client);
 		chan->addModerator(client);
 	}
 

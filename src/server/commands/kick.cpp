@@ -28,4 +28,10 @@ void Server::kick(Client &client, std::vector<std::string> &params)
 	sendToChannel(*chan, msg);
 
 	chan->removeMember(*target);
+	chan->promoteNextModerator();
+	if (!chan->isEmptyChannel()) {
+		std::string opMsg = ":ircserv MODE " + chan->getName() + " +o " +
+							chan->getModerators().begin()->second->getNickname() + "\r\n";
+		sendToChannel(*chan, opMsg);
+	}
 }

@@ -41,9 +41,11 @@ class Channel
 	std::string getMembersList() const;
 
 	/* ——— Opérators          ——————————————————————————————————————————————— */
-	void addModerator(Client &client);
-	void removeModerator(Client &client);
-	bool isModerator(Client &client) const;
+	void								   addModerator(Client &client);
+	void								   removeModerator(Client &client);
+	bool								   isModerator(Client &client) const;
+	void								   promoteNextModerator();
+	const std::map<std::string, Client *> &getModerators() const;
 
 	/* ——— Topic      ——————————————————————————————————————————————————————— */
 	const std::string &getTopic() const;
@@ -72,6 +74,7 @@ class Channel
 	void setInviteOnly(bool inviteOnly);
 	void addInviteMember(Client &client);
 	bool isInvited(Client &client) const;
+	void removeInvite(Client &client);
 };
 
 typedef std::map<std::string, Channel *>::iterator		ChanIt;
