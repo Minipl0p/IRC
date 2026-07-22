@@ -16,14 +16,14 @@
 
 int main(int ac, char **av)
 {
-	std::string password(av[2]);
-	Server		server(std::atoi(av[1]), password);
-	int			timeout = (3 * 60 * 1000);
-
 	if (ac != 3) {
 		std::cerr << "Invalid numbers of arguments." << std::endl;
 		return -1;
 	}
+
+	std::string password(av[2]);
+	Server		server(std::atoi(av[1]), password);
+	int			timeout = (3 * 60 * 1000);
 
 	for (;;) {
 		if (poll(server.getLstFds().data(),
@@ -64,23 +64,6 @@ int main(int ac, char **av)
 			client->getReadBuffer().append(buff, n);
 			server.handleClientData(*client);
 		}
-
-		// for (size_t i = server.getLstFds().size() - 1; i >= 1; i--) {
-		// 	pollfd &fdClient = server.getLstFds()[i];
-		// 	if (!(fdClient.revents & POLLIN))
-		// 		continue;
-		// 	Client *client = server.getListeningClientsMap()[fdClient.fd];
-		// 	char	buff[4096];
-		// 	int		n = recv(fdClient.fd, buff, sizeof(buff), 0);
-		// 	if (n <= 0) {
-		// 		std::string quitMsg = ":" + client->getNickname() + "!" + client->getUsername() +
-		// 							  "@localhost QUIT :Connection closed\r\n";
-		// 		server.deleteClientsToLst(client, quitMsg);
-		// 		continue;
-		// 	}
-		// 	client->getReadBuffer().append(buff, n);
-		// 	server.handleClientData(*client);
-		// }
 	}
 	close(server.getServerSocket());
 
