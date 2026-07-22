@@ -13,26 +13,29 @@
 #include "../../channels/Channel.hpp"
 #include "../Server.hpp"
 
-void Server::part(Client &client, std::vector<std::string> &params)
+void Server::partChannel(Client &client, const std::string &chanName, const std::string &comment)
 {
-	if (!requireRegistered(client))
-		return;
-	if (!requireParams(client, params, 1, "PART"))
-		return;
-
-	Channel *chan = requireChannel(client, params[0]);
-	if (!chan)
-		return;
-	if (!requireMember(client, chan))
+	Channel *chan = requireChannel(client, chanName);
+	if (!chan || !requireMember(client, chan))
 		return;
 
-	std::string comment = (params.size() >= 2) ? params[1] : "";
-	std::string msg = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost PART " +
-					  chan->getName() + " :" + comment + "\r\n";
-	sendToChannel(*chan, msg);
+	sendToChannel(*chan,
+				  ":" + client.getNickname() + "!" + client.getUsername() + "@localhost PART " +
+					  chan->getName() + " :" + comment);
 	chan->removeMember(client);
 
-	if (chan->isEmptyChannel()) {
+	if (chan->isEmptyChannel())
 		deleteChannelToLst(chan);
-	}
+}
+
+void Server::part(Client &client, std::vector<std::string> &params)
+{
+	if (!requireRegistered(client) || !requireParams(client, params, 1, "PART"))
+		return;
+
+	std::vector<std::string> channels = split(params[0], ',');
+	std::string				 comment  = (params.size() >= 2) ? params[1] : "";
+
+	for (size_t i = 0; i < channels.size(); i++)
+		partChannel(client, channels[i], comment);
 }

@@ -76,9 +76,11 @@ class Server
 
 	/* ——— Channel management ——————————————————————————————————————————————— */
 	void addChannelToLst(Channel &);
-	bool findChannelToLst(std::string &name) const;
+	bool findChannelToLst(const std::string &name) const;
 	void deleteChannelToLst(Channel *);
 	void sendToChannel(const Channel &, const std::string &);
+	void joinChannel(Client &client, const std::string &chanName, const std::string &key);
+	void partChannel(Client &client, const std::string &chanName, const std::string &comment);
 
 	/* ——— Replies —————————————————————————————————————————————————————————— */
 	void sendReply(Client &client, const std::string &code, const std::string &params);
@@ -116,3 +118,5 @@ class Server
 	const sockaddr_in					   &getServerAddress() const;
 	const pollfd						   &getServerFd() const;
 };
+
+std::vector<std::string> split(const std::string &s, char delim);
