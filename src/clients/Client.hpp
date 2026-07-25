@@ -24,6 +24,7 @@ class Client
 	bool		_authenticated;
 	bool		_passOk;
 	std::string _readBuffer;
+	bool		_disconnected;
 
   public:
 	Client(int fd);
@@ -37,6 +38,7 @@ class Client
 	bool			   isAuthenticated() const;
 	bool			   isPassOk() const;
 	std::string		  &getReadBuffer();
+	bool			   isDisconnected() const;
 
 	// Setter ------------------------------------------------------------------
 	void setNickname(const std::string &);
@@ -44,4 +46,5 @@ class Client
 	void setFullname(const std::string &);
 	void setAuthenticated(bool);
 	void setPassOk(bool);
+	void setDisconnected(bool v);
 };

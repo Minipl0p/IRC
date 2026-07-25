@@ -1,7 +1,7 @@
 
 #include "Client.hpp"
 
-Client::Client(int fd) : _fd(fd), _authenticated(false), _passOk(false) {}
+Client::Client(int fd) : _fd(fd), _authenticated(false), _passOk(false), _disconnected(false) {}
 
 Client::~Client() {}
 
@@ -28,3 +28,7 @@ void Client::setFullname(const std::string &name) { _fullname = name; }
 void Client::setAuthenticated(bool value) { _authenticated = value; }
 
 void Client::setPassOk(bool value) { _passOk = value; }
+
+bool Client::isDisconnected() const { return _disconnected; }
+
+void Client::setDisconnected(bool v) { _disconnected = v; }

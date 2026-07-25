@@ -96,6 +96,8 @@ void Server::handleClientData(Client &client)
 
 		Message msg = tokenizeLine(line);
 		executeCmd(client, msg);
+		if (wasDeleted)
+			return;
 	}
 }
 
