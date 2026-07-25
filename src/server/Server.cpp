@@ -29,7 +29,19 @@ Server::Server(int port, std::string password)
 
 Server::~Server()
 {
-	// Destroy lst client
+	for (std::map<fd, Client *>::iterator it = _listeningClientsMap.begin();
+		 it != _listeningClientsMap.end();
+		 ++it)
+		delete it->second;
+	_listeningClientsMap.clear();
+
+	for (std::map<std::string, Channel *>::iterator it = _lstChannels.begin();
+		 it != _lstChannels.end();
+		 ++it)
+		delete it->second;
+	_lstChannels.clear();
+
+	close(_serverSocket);
 }
 
 /* ——— Getters & Setters ———————————————————————————————————————————————————— */
@@ -89,14 +101,13 @@ void Server::handleClientData(Client &client)
 	size_t		 pos;
 
 	while ((pos = buf.find("\r\n")) != std::string::npos) {
-		size_t lineLen = pos;
-
-		std::string line = buf.substr(0, lineLen);
+		std::string line = buf.substr(0, pos);
 		buf.erase(0, pos + 2);
 
 		Message msg = tokenizeLine(line);
+
 		executeCmd(client, msg);
-		if (wasDeleted)
+		if (_listeningClientsMap.find(client.getFd()) == _listeningClientsMap.end())
 			return;
 	}
 }
@@ -132,6 +143,7 @@ void Server::deletePollfdsToLst(const fd &srcFd)
 
 /* ——— Client management ———————————————————————————————————————————————— */
 void Server::addClientsToLst(Client &src) { _listeningClientsMap[src.getFd()] = &src; }
+
 bool Server::findClientsToLst(fd &src) const
 {
 	std::map<fd, Client *>::const_iterator it = _listeningClientsMap.find(src);
