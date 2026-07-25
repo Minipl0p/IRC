@@ -105,9 +105,10 @@ void Server::handleClientData(Client &client)
 		buf.erase(0, pos + 2);
 
 		Message msg = tokenizeLine(line);
+		int		fd	= client.getFd();
 
 		executeCmd(client, msg);
-		if (_listeningClientsMap.find(client.getFd()) == _listeningClientsMap.end())
+		if (_listeningClientsMap.find(fd) == _listeningClientsMap.end())
 			return;
 	}
 }
@@ -166,7 +167,7 @@ void Server::deleteClientsToLst(Client *src, std::string &msg)
 			chan->promoteNextModerator();
 			if (!chan->isEmptyChannel() && !chan->getModerators().empty()) {
 				std::string opMsg = ":ircserv MODE " + chan->getName() + " +o " +
-									chan->getModerators().begin()->second->getNickname() + "\r\n";
+									chan->getModerators().begin()->second->getNickname();
 				sendToChannel(*chan, opMsg);
 			}
 			if (chan->isEmptyChannel())
