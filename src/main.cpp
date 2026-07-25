@@ -32,11 +32,14 @@ int main(int ac, char **av)
 		return 1;
 	}
 
+	signal(SIGINT, handler);
+	signal(SIGQUIT, handler);
+
 	std::string password(av[2]);
 	Server		server(port, password);
 	int			timeout = (3 * 60 * 1000);
 
-	for (;;) {
+	while (g_running) {
 		int ret = poll(
 			server.getLstFds().data(), static_cast<nfds_t>(server.getLstFds().size()), timeout);
 		if (ret < 0) {
