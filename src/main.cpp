@@ -20,14 +20,12 @@ int main(int ac, char **av)
 		std::cerr << "Invalid numbers of arguments." << std::endl;
 		return -1;
 	}
-
 	for (int i = 0; av[1][i]; i++) {
 		if (!std::isdigit(av[1][i])) {
 			std::cerr << "Error: port must be a number" << std::endl;
 			return 1;
 		}
 	}
-
 	int port = std::atoi(av[1]);
 	if (port < 1024 || port > 65535) {
 		std::cerr << "Error: port must be between 1024 and 65535" << std::endl;
@@ -35,31 +33,27 @@ int main(int ac, char **av)
 	}
 
 	std::string password(av[2]);
-	Server		server(std::atoi(av[1]), password);
+	Server		server(port, password);
 	int			timeout = (3 * 60 * 1000);
 
 	for (;;) {
-		if (poll(server.getLstFds().data(),
-				 static_cast<nfds_t>(server.getLstFds().size()),
-				 timeout) < 0) {
-			std::cerr << "Poll failed." << std::endl;
-			close(server.getServerSocket());
-			return 1;
+		int ret = poll(
+			server.getLstFds().data(), static_cast<nfds_t>(server.getLstFds().size()), timeout);
+		if (ret < 0) {
+			if (errno != EINTR)
+				std::cerr << "Poll failed." << std::endl;
+			break;
 		}
 
 		if (server.getLstFds()[0].revents & POLLIN) {
 			int newClientSocket = accept(server.getServerSocket(), NULL, NULL);
 			if (newClientSocket < 0)
 				break;
-			server.getLstFds().push_back(
-				(struct pollfd){newClientSocket, POLLIN, 0}); // Mettre le bon flag
+			server.getLstFds().push_back((struct pollfd){newClientSocket, POLLIN, 0});
 			Client *newClient = new Client(newClientSocket);
 			server.addClientsToLst(*newClient);
-			std::cout << "New Client :" << newClient->getNickname() << " " << newClient->getFd()
-					  << std::endl;
 		}
 
-		// lecture des clients
 		for (size_t i = 1; i < server.getLstFds().size(); i++) {
 			pollfd &fdClient = server.getLstFds()[i];
 			if (!(fdClient.revents & POLLIN))
@@ -67,9 +61,9 @@ int main(int ac, char **av)
 			Client *client = server.getListeningClientsMap()[fdClient.fd];
 			char	buff[4096];
 			int		n = recv(fdClient.fd, buff, sizeof(buff), 0);
-			if (n <= 0) { // deconnexion du client
+			if (n <= 0) {
 				std::string quitMsg = ":" + client->getNickname() + "!" + client->getUsername() +
-									  "@localhost QUIT :Connection closed\r\n";
+									  "@localhost QUIT :Connection closed";
 				server.deleteClientsToLst(client, quitMsg);
 				--i;
 				continue;
@@ -78,7 +72,5 @@ int main(int ac, char **av)
 			server.handleClientData(*client);
 		}
 	}
-	close(server.getServerSocket());
-
 	return 0;
 }
