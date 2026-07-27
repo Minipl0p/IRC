@@ -54,12 +54,11 @@ BOLD        = \033[22m\033[1m
 DIM         = \033[2m
 GREEN       = \033[32m
 CYAN        = \033[36m
-ORANGE      = \033[38;5;183m
-RED         = \033[38;5;210m
+PURPLE      = \033[38;5;183m
 
 # ——— Banner ———————————————————————————————————————————————————————————————— #
 define BANNER
-$(BOLD)$(ORANGE)\n  ██$(DIM)╗██████$(DIM)╗  ██████$(DIM)╗\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)╔════╝\n  ██$(DIM)║██████$(DIM)╔╝██$(DIM)║\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)║\n  ██$(DIM)║██║  ██$(DIM)║╚██████$(DIM)╗\n  ╚═╝╚═╝  ╚═╝ ╚═════╝$(R)\n$(DIM)                    by rcompain & pchazalm — 42 Angoulême\n\n$(R)
+$(BOLD)$(PURPLE)\n $(DIM) ██$(DIM)╗██████$(DIM)╗  ██████$(DIM)╗\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)╔════╝\n  ██$(DIM)║██████$(DIM)╔╝██$(DIM)║\n  ██$(DIM)║██$(DIM)╔══██$(DIM)╗██$(DIM)║\n  ██$(DIM)║██║  ██$(DIM)║╚██████$(DIM)╗\n  ╚═╝╚═╝  ╚═╝ ╚═════╝$(R)\n$(DIM)                    by rcompain & pchazalm — 42 Angoulême\n\n$(R)
 endef
 export BANNER
 
@@ -80,6 +79,7 @@ banner:
 	@printf "$$BANNER"
 
 # ——— Cleanup ——————————————————————————————————————————————————————————————— #
+
 clean:
 	@$(RM) -r $(OBJ_DIR)
 	@printf "$(CYAN)🗑  Object files removed$(R)\n"
