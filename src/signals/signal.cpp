@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "signal.hpp"
+#include <csignal>
 
 volatile sig_atomic_t g_running = 1;
 
@@ -28,4 +29,5 @@ void init_signals(void)
 	sa.sa_handler = handler;
 	sa.sa_flags	  = SA_RESTART;
 	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 }
