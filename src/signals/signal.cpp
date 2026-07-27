@@ -14,7 +14,7 @@
 
 volatile sig_atomic_t g_running = 1;
 
-void handler(int sig)
+static void handler(int sig)
 {
 	if (sig == SIGINT)
 		g_running = 0;
