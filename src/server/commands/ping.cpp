@@ -21,6 +21,8 @@ void Server::ping(Client &client, std::vector<std::string> &params)
 	if (!requireParams(client, params, 1, "PING"))
 		return;
 
-	std::string msg = ":localhost PONG localhost :" + params[0] + "\r\n";
+	std::string	name= "botte";
+	std::string msg = ":" + name + "!" + name +
+		"@localhost PRIVMSG " + client.getNickname() + " :" + "PONG !\r\n";
 	send(client.getFd(), msg.c_str(), msg.size(), 0);
 }
