@@ -37,8 +37,10 @@ Server::~Server()
 
 	for (std::map<std::string, Channel *>::iterator it = _lstChannels.begin();
 		 it != _lstChannels.end();
-		 ++it)
+		 ++it)	{
+					delete it->first;
 		delete it->second;
+		}
 	_lstChannels.clear();
 
 	close(_serverSocket);
