@@ -30,8 +30,8 @@ Server::~Server()
 	for (std::map<fd, Client *>::iterator it = _listeningClientsMap.begin();
 		 it != _listeningClientsMap.end();
 		 ++it)	{
-					delete it->first;
-		delete it->second;
+			close(it->first);
+			delete it->second;
 		 }
 	_listeningClientsMap.clear();
 
