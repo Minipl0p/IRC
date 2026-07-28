@@ -15,8 +15,6 @@
 /* ——— Constructor & Destructor ————————————————————————————————————————————— */
 Server::Server(int port, std::string password)
 {
-	//_commandsMap["PASS"] = fonction
-
 	try {
 		initServ(port, password);
 	} catch (const std::runtime_error &error) {
@@ -31,16 +29,16 @@ Server::~Server()
 {
 	for (std::map<fd, Client *>::iterator it = _listeningClientsMap.begin();
 		 it != _listeningClientsMap.end();
-		 ++it)
+		 ++it)	{
+					delete it->first;
 		delete it->second;
+		 }
 	_listeningClientsMap.clear();
 
 	for (std::map<std::string, Channel *>::iterator it = _lstChannels.begin();
 		 it != _lstChannels.end();
-		 ++it)	{
-					delete it->first;
+		 ++it)
 		delete it->second;
-		}
 	_lstChannels.clear();
 
 	close(_serverSocket);
