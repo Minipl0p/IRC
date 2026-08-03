@@ -72,7 +72,6 @@ void Server::initServ(int port, std::string password)
 	std::memset(&(_serverAddress), 0, sizeof(_serverAddress));
 	this->_serverAddress.sin_family = AF_INET;
 	this->_serverAddress.sin_port	= htons(port);
-	std::cout << this->_serverAddress.sin_port << std::endl;
 	this->_serverAddress.sin_addr.s_addr = INADDR_ANY;
 
 	int opt = 1;
