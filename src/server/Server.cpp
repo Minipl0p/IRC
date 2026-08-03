@@ -162,13 +162,13 @@ void Server::deleteClientsToLst(Client *src, std::string &msg)
 		++it;
 		if (chan->isMember(*src)) {
 			if (!msg.empty())
-				sendToChannel(*chan, msg);
+				sendToChannel(*chan, msg, *src);
 			chan->removeMember(*src);
 			chan->promoteNextModerator();
 			if (!chan->isEmptyChannel() && !chan->getModerators().empty()) {
 				std::string opMsg = ":ircserv MODE " + chan->getName() + " +o " +
 									chan->getModerators().begin()->second->getNickname();
-				sendToChannel(*chan, opMsg);
+				sendToChannel(*chan, opMsg, *src);
 			}
 			if (chan->isEmptyChannel())
 				deleteChannelToLst(chan);
